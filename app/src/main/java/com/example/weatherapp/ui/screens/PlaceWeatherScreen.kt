@@ -11,19 +11,17 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 
 @Composable
-fun AddPlaceScreen(navController: NavHostController) {
+fun PlaceWeatherScreen(navController: NavHostController) {
     Column (
         modifier = Modifier
             .padding(top = 128.dp)
     ){
-        Text(text = "Add Place Screen")
+        Text(text = "Place Weather Screen")
         Button(onClick = {
-            navController.navigate(Screen.PlaceWeatherScreen.route)
+            navController.navigate(Screen.AddPlaceScreen.route)
         },
             modifier = Modifier
-                .width(150.dp)
-        )
-        {
+                .width(150.dp)) {
 
         }
     }

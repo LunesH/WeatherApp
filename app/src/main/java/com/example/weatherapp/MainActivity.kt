@@ -17,7 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.weatherapp.ui.screens.AddPlaceScreen
+import com.example.weatherapp.ui.screens.PlaceWeatherScreen
+import com.example.weatherapp.ui.screens.Screen
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -41,6 +47,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherApp() {
+    val navController = rememberNavController();
     Scaffold(
         topBar = {
             TopAppBar(
@@ -53,13 +60,23 @@ fun WeatherApp() {
                 colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Blue)
             )
         },
-        content = { innerPadding -> WheatherNavHost(Modifier.padding(innerPadding)) },
+        content = { innerPadding -> WheatherNavHost(navController, Modifier.padding(innerPadding)) },
     )
 }
 
 @Composable
-fun WheatherNavHost(padding: Modifier) {
-    AddPlaceScreen()
+fun WheatherNavHost(navController: NavHostController, padding: Modifier) {
+    NavHost(
+        navController = navController,
+        startDestination = Screen.AddPlaceScreen.route,
+        ){
+        composable(route = Screen.AddPlaceScreen.route){
+            AddPlaceScreen(navController)
+        }
+        composable(route = Screen.PlaceWeatherScreen.route){
+            PlaceWeatherScreen(navController)
+        }
+    }
 }
 
 @Composable
