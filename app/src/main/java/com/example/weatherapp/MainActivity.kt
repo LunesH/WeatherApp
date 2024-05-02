@@ -1,10 +1,14 @@
 package com.example.weatherapp
 
+import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -17,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -50,15 +55,21 @@ fun WeatherApp() {
     val navController = rememberNavController();
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.app_name),
-                        color = Color.White
-                    )
-                },
-                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color.Blue)
-            )
+            Surface (shadowElevation = 16.dp) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.app_name),
+                            color = Color.Black
+                        )
+                    },
+                    colors = TopAppBarDefaults.smallTopAppBarColors(
+                        containerColor = Color(
+                            0xffF5F5F5
+                        )
+                    ),
+                )
+            }
         },
         content = { innerPadding -> WheatherNavHost(navController, Modifier.padding(innerPadding)) },
     )
