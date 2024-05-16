@@ -1,14 +1,10 @@
 package com.example.weatherapp
 
-import android.graphics.drawable.Icon
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,10 +26,13 @@ import com.example.weatherapp.ui.screens.AddPlaceScreen
 import com.example.weatherapp.ui.screens.PlaceWeatherScreen
 import com.example.weatherapp.ui.screens.Screen
 import com.example.weatherapp.ui.theme.WeatherAppTheme
+import com.example.weatherapp.viewmodel.PlaceViewmodel
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             WeatherAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -53,6 +52,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun WeatherApp() {
     val navController = rememberNavController();
+    val placeViewmodel = PlaceViewmodel();
     Scaffold(
         topBar = {
             Surface (shadowElevation = 16.dp) {
@@ -71,18 +71,22 @@ fun WeatherApp() {
                 )
             }
         },
-        content = { innerPadding -> WheatherNavHost(navController, Modifier.padding(innerPadding)) },
+        content = { innerPadding -> WeatherNavHost(navController, Modifier.padding(innerPadding),placeViewmodel) },
     )
 }
 
 @Composable
-fun WheatherNavHost(navController: NavHostController, padding: Modifier) {
+fun WeatherNavHost(
+    navController: NavHostController,
+    padding: Modifier,
+    placeViewmodel: PlaceViewmodel
+) {
     NavHost(
         navController = navController,
         startDestination = Screen.AddPlaceScreen.route,
         ){
         composable(route = Screen.AddPlaceScreen.route){
-            AddPlaceScreen(navController)
+            AddPlaceScreen(navController,placeViewmodel)
         }
         composable(route = Screen.PlaceWeatherScreen.route){
             PlaceWeatherScreen(navController)

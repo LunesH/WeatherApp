@@ -1,8 +1,7 @@
 package com.example.weatherapp.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,12 +37,21 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.weatherapp.model.Place
 import com.example.weatherapp.util.PlaceCard
+import com.example.weatherapp.viewmodel.PlaceViewmodel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
 
 @Composable
-fun AddPlaceScreen(navController: NavHostController) {
+fun AddPlaceScreen(navController: NavHostController, placeViewmodel: PlaceViewmodel) {
 
     var searchQuery by remember { mutableStateOf("") }
     var searchResult by remember { mutableStateOf("No search yet") }
+
+
+
+
+
 
     Column (
         modifier = Modifier
@@ -52,7 +61,7 @@ fun AddPlaceScreen(navController: NavHostController) {
         Spacer(modifier = Modifier.height(64.dp))
         Text(text = "Add Place Screen")
         Button(onClick = {
-            navController.navigate(Screen.PlaceWeatherScreen.route)
+             //navController.navigate(Screen.PlaceWeatherScreen.route)
         },
             modifier = Modifier
                 .width(150.dp)
@@ -60,7 +69,7 @@ fun AddPlaceScreen(navController: NavHostController) {
         {
 
         }
-        SearchBar { query ->
+        SearchBar (placeViewmodel){ query ->
             searchQuery = query
             searchResult = "Search query: $query"
         }
@@ -78,11 +87,19 @@ fun AddPlaceScreen(navController: NavHostController) {
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBar(onSearch: (String) -> Unit) {
+fun SearchBar(placeViewmodel: PlaceViewmodel, onSearch: (String) -> Unit) {
     var searchQuery by remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
+    
+    LaunchedEffect(searchQuery) {
+        withContext(Dispatchers.IO) {
+            placeViewmodel.updateAutomcompletePlaceList(searchQuery)
+            var res = placeViewmodel.placeAutocompletionList
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -96,7 +113,7 @@ fun SearchBar(onSearch: (String) -> Unit) {
                 value = searchQuery,
                 onValueChange = {
                     searchQuery = it
-                    onSearch.invoke(it)
+                    onSearch(it)
                 },
                 placeholder = {
                     Text("Add a place")
@@ -129,20 +146,24 @@ fun SearchBar(onSearch: (String) -> Unit) {
                 textStyle = LocalTextStyle.current.copy(color = Color.Black)
             )
 
-            if (!searchQuery.equals("")) {
+            if (placeViewmodel.placeAutocompletionList.isNotEmpty()) {
                 Column (
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
                         .padding(bottom = 16.dp)
                 ){
-                    Divider(
-                        modifier = Modifier
-                            .padding(vertical = 8.dp)
-                            .padding(bottom = 16.dp),
-                        thickness = 2.dp,
-                        color = Color.LightGray,
-                    )
-                    Text(text = "Cityname", modifier = Modifier.padding(bottom = 8.dp));
+                   placeViewmodel.placeAutocompletionList.forEach{ placename ->
+                        Divider(
+                            modifier = Modifier
+                                .padding(vertical = 8.dp)
+                                .padding(bottom = 16.dp),
+                            thickness = 2.dp,
+                            color = Color.LightGray,
+                        )
+                        Text(text = placename, modifier = Modifier.padding(bottom = 8.dp));
+                    }
+
+
                 };
 
             }
