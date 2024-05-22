@@ -1,5 +1,6 @@
 package com.example.weatherapp.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -15,6 +16,15 @@ class PlaceViewmodel : ViewModel() {
     var placeAutocompletionList by mutableStateOf(emptyList<String>())
     suspend fun updateAutomcompletePlaceList(input : String){
         placeAutocompletionList = placeRepository.getAutocompletion(input)
+    }
+    suspend fun getPlaceCoordinates(place: Place): Place{
+        var response = place
+        try {
+            response = placeRepository.getCoordinates(place)
+        }catch(e:Exception){
+            Log.e("exception",e.message.toString())
+        }
+        return response
     }
 }
 

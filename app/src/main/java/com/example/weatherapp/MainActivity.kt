@@ -1,6 +1,7 @@
 package com.example.weatherapp
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -27,6 +29,8 @@ import com.example.weatherapp.ui.screens.PlaceWeatherScreen
 import com.example.weatherapp.ui.screens.Screen
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.example.weatherapp.viewmodel.PlaceViewmodel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
@@ -53,6 +57,13 @@ class MainActivity : ComponentActivity() {
 fun WeatherApp() {
     val navController = rememberNavController();
     val placeViewmodel = PlaceViewmodel();
+    LaunchedEffect(true) {
+        withContext(Dispatchers.IO) {
+            placeViewmodel.placesList.forEach{place ->
+                placeViewmodel.getPlaceCoordinates(place)
+            }
+        }
+    }
     Scaffold(
         topBar = {
             Surface (shadowElevation = 16.dp) {

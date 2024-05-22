@@ -2,6 +2,8 @@ package com.example.weatherapp.repository
 
 import android.util.Log
 import com.example.weatherapp.model.AutocompletionPlace
+import com.example.weatherapp.model.GeoCodingResponse
+import com.example.weatherapp.model.Place
 import com.example.weatherapp.model.PlaceHolder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -50,6 +52,44 @@ class PlaceRepository {
         }
 
            return placeList;
+
+
+        }
+
+
+
+        //Geocoding APi
+        suspend fun getCoordinates(place: Place): Place {
+            var geocodingApiKey = "efd4eb38672f855233e1f31b9c6c4d54"
+            var newPlace = place
+            withContext(Dispatchers.IO) {
+                val client = OkHttpClient()
+                val request = Request.Builder()
+                    .url("http://api.openweathermap.org/geo/1.0/direct?q="+place.placeName+"&limit=1&appid="+geocodingApiKey)
+                    .get()
+                    .build()
+
+                var response = client.newCall(request).execute();
+                val responseBody = response.body()
+
+                if (response.isSuccessful && responseBody != null) {
+                    val bodyString = responseBody.string()
+                    try {
+                        val jsonArray = JsonParser.parseString(bodyString).asJsonArray
+                        val jsonObject = jsonArray.get(0).asJsonObject
+                        val gson = Gson()
+
+                        val geoCodingResponse = gson.fromJson(jsonObject, GeoCodingResponse::class.java)
+                        Log.e("lat",geoCodingResponse.lat.toString())
+                        newPlace = Place(place.placeName,place.creationDate,geoCodingResponse.lat,geoCodingResponse.lon)
+
+                    }catch(e:Exception){
+                        Log.e("exception",e.message.toString())
+                    }
+                }
+            }
+
+            return newPlace;
 
 
         }
