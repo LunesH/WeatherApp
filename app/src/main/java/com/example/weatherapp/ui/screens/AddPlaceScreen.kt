@@ -2,6 +2,7 @@ package com.example.weatherapp.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -161,7 +162,15 @@ fun SearchBar(placeViewmodel: PlaceViewmodel, onSearch: (String) -> Unit) {
                             thickness = 2.dp,
                             color = Color.LightGray,
                         )
-                        Text(text = placename, modifier = Modifier.padding(bottom = 8.dp));
+                       Box (
+                           modifier = Modifier.fillMaxWidth()
+                               .clickable {
+                                   placeViewmodel.placesList += Place(placename,"now",0.0,0.0)
+                                   searchQuery="";
+                           }
+                       ){
+                           Text(text = placename, modifier = Modifier.padding(bottom = 8.dp))
+                       };
                     }
 
 
