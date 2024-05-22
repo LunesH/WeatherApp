@@ -41,6 +41,8 @@ import com.example.weatherapp.util.PlaceCard
 import com.example.weatherapp.viewmodel.PlaceViewmodel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -59,21 +61,12 @@ fun AddPlaceScreen(navController: NavHostController, placeViewmodel: PlaceViewmo
             .fillMaxHeight()
             .background(Color(0xffD2D2D2))
     ){
-        Spacer(modifier = Modifier.height(64.dp))
-        Text(text = "Add Place Screen")
-        Button(onClick = {
-             //navController.navigate(Screen.PlaceWeatherScreen.route)
-        },
-            modifier = Modifier
-                .width(150.dp)
-        )
-        {
-
-        }
+        Spacer(modifier = Modifier.height(88.dp))
         SearchBar (placeViewmodel){ query ->
             searchQuery = query
             searchResult = "Search query: $query"
         }
+        Spacer(modifier = Modifier.height(10.dp))
         PlaceCard(Place("Bremen","01-05-2024",0.0,0.0),navController)
         Divider(
             modifier = Modifier
@@ -165,7 +158,9 @@ fun SearchBar(placeViewmodel: PlaceViewmodel, onSearch: (String) -> Unit) {
                        Box (
                            modifier = Modifier.fillMaxWidth()
                                .clickable {
-                                   placeViewmodel.placesList += Place(placename,"now",0.0,0.0)
+                                   val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
+                                   val date = LocalDateTime.now().format(formatter)
+                                   placeViewmodel.placesList += Place(placename,date,0.0,0.0)
                                    searchQuery="";
                            }
                        ){
