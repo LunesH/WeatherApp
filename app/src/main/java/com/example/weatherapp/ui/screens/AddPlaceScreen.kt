@@ -86,7 +86,11 @@ fun AddPlaceScreen(navController: NavHostController, placeViewmodel: PlaceViewmo
 fun SearchBar(placeViewmodel: PlaceViewmodel, onSearch: (String) -> Unit) {
     var searchQuery by remember { mutableStateOf("") }
 
-
+    LaunchedEffect(searchQuery) {
+        withContext(Dispatchers.IO) {
+            placeViewmodel.updateAutomcompletePlaceList(searchQuery)
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxWidth()
