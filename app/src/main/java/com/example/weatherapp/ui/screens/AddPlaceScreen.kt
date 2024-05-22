@@ -81,8 +81,9 @@ fun AddPlaceScreen(navController: NavHostController, placeViewmodel: PlaceViewmo
             thickness = 2.dp,
             color = Color(0xFFE4E4E4),
         );
-        PlaceCard(Place("Hamburg","02-05-2024",0.0,0.0),navController)
-        PlaceCard(Place("Tokio","05-05-2024",0.0,0.0),navController)
+        placeViewmodel.placesList.forEach {place ->
+            PlaceCard(place = place, navController = navController)
+        }
 
     }
 }
