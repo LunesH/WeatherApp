@@ -100,7 +100,7 @@ fun WeatherNavHost(
             AddPlaceScreen(navController,placeViewmodel)
         }
         composable(route = Screen.PlaceWeatherScreen.route){
-            PlaceWeatherScreen(navController)
+            PlaceWeatherScreen(navController,placeViewmodel.selectedPlace)
         }
     }
 }

@@ -72,7 +72,7 @@ fun AddPlaceScreen(navController: NavHostController, placeViewmodel: PlaceViewmo
             searchResult = "Search query: $query"
         }
         Spacer(modifier = Modifier.height(10.dp))
-        PlaceCard(Place("Bremen", "01-05-2024", 0.0, 0.0), navController, placeViewmodel)
+        PlaceCard(Place("Bremen", "location", 0.0, 0.0), navController, placeViewmodel)
         Divider(
             modifier = Modifier
                 .padding(horizontal = 24.dp)

@@ -14,6 +14,8 @@ class PlaceViewmodel : ViewModel() {
     var placesList by mutableStateOf(listOf<Place>(Place("Bremen","22-05-2024",0.0,0.0),Place("Hamburg","22-05-2024",0.0,0.0)))
 
     var placeAutocompletionList by mutableStateOf(emptyList<String>())
+
+    var selectedPlace = Place("Hannover", "23-05-2024",52.3744779, 9.7385532)
     suspend fun updateAutomcompletePlaceList(input : String){
         placeAutocompletionList = placeRepository.getAutocompletion(input)
     }
