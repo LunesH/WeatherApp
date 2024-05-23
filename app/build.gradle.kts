@@ -69,6 +69,10 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    //livedata
+    val liveDataVersion = "1.3.0-rc01"
+    implementation ("androidx.compose.runtime:runtime-livedata:$liveDataVersion")
+
     //navigation
     val navVersion = "2.7.1"
     implementation ("androidx.navigation:navigation-compose:$navVersion")
@@ -79,5 +83,9 @@ dependencies {
 
     //GSON
     implementation ("com.google.code.gson:gson:2.8.6")
+
+    implementation ("com.squareup.okhttp3:okhttp:4.4.0")
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.4.0")
+
 
 }
