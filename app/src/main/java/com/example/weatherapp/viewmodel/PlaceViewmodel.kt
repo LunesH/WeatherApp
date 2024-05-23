@@ -9,7 +9,7 @@ import com.example.weatherapp.model.Place
 import com.example.weatherapp.repository.PlaceRepository
 
 class PlaceViewmodel : ViewModel() {
-    private val placeRepository = PlaceRepository();
+    private val placeRepository = PlaceRepository()
 
     var placesList by mutableStateOf(listOf<Place>(Place("Bremen","22-05-2024",0.0,0.0),Place("Hamburg","22-05-2024",0.0,0.0)))
 
@@ -17,14 +17,16 @@ class PlaceViewmodel : ViewModel() {
     suspend fun updateAutomcompletePlaceList(input : String){
         placeAutocompletionList = placeRepository.getAutocompletion(input)
     }
-    suspend fun getPlaceCoordinates(place: Place): Place{
-        var response = place
+
+    suspend fun updatePlaceCoordinates(place: Place){
         try {
-            response = placeRepository.getCoordinates(place)
+            var newPlace = placeRepository.getCoordinates(place)
+            val index = placesList.indexOfFirst { newPlace.placeName == it.placeName }
+            placesList[index].longitude = newPlace.longitude
+            placesList[index].latitude = newPlace.latitude
         }catch(e:Exception){
             Log.e("exception",e.message.toString())
         }
-        return response
     }
 }
 

@@ -1,5 +1,6 @@
 package com.example.weatherapp.util
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,7 +35,10 @@ fun PlaceCard (place: Place, navController: NavHostController, placeViewmodel: P
         modifier = Modifier
             .padding(horizontal = 22.dp)
             .padding(vertical = 12.dp)
-            .clickable { navController.navigate(Screen.PlaceWeatherScreen.route) },
+            .clickable {
+                //navController.navigate(Screen.PlaceWeatherScreen.route)
+                       Log.e("coordinates:",place.toString())
+                       },
         shape =RoundedCornerShape(22.dp),
     ){
         Row (

@@ -60,7 +60,7 @@ fun WeatherApp() {
     LaunchedEffect(true) {
         withContext(Dispatchers.IO) {
             placeViewmodel.placesList.forEach{place ->
-                placeViewmodel.getPlaceCoordinates(place)
+                placeViewmodel.updatePlaceCoordinates(place)
             }
         }
     }
@@ -105,18 +105,3 @@ fun WeatherNavHost(
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    WeatherAppTheme {
-        Greeting("Android")
-    }
-}

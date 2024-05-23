@@ -51,7 +51,7 @@ class PlaceRepository {
             }
         }
 
-           return placeList;
+           return placeList
 
 
         }
@@ -80,7 +80,6 @@ class PlaceRepository {
                         val gson = Gson()
 
                         val geoCodingResponse = gson.fromJson(jsonObject, GeoCodingResponse::class.java)
-                        Log.e("lat",geoCodingResponse.lat.toString())
                         newPlace = Place(place.placeName,place.creationDate,geoCodingResponse.lat,geoCodingResponse.lon)
 
                     }catch(e:Exception){

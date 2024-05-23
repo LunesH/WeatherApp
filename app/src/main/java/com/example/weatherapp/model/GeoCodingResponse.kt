@@ -2,14 +2,14 @@ package com.example.weatherapp.model
 
 import com.google.gson.annotations.SerializedName
 
-data class GeoCodingResponse (
+data class GeoCodingResponse(
     @SerializedName("name") var name: String,
     @SerializedName("local_names") var localNames: LocalNames,
     @SerializedName("lat") var lat: Double,
     @SerializedName("lon") var lon: Double,
     @SerializedName("country") var country: String,
     @SerializedName("state") var state: String,
-    )
+)
 
 data class LocalNames(
     val ja: String?,
