@@ -30,7 +30,7 @@ class PlaceRepository {
                 .build()
 
             var response = client.newCall(request).execute();
-            val responseBody = response.body;
+            val responseBody = response.body()
 
             if (response.isSuccessful && responseBody != null) {
                 val bodyString = responseBody.string()
@@ -70,7 +70,7 @@ class PlaceRepository {
                     .build()
 
                 var response = client.newCall(request).execute();
-                val responseBody = response.body
+                val responseBody = response.body()
 
                 if (response.isSuccessful && responseBody != null) {
                     val bodyString = responseBody.string()
