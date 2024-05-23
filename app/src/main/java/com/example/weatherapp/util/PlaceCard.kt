@@ -21,9 +21,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.weatherapp.model.Place
 import com.example.weatherapp.ui.screens.Screen
+import com.example.weatherapp.viewmodel.PlaceViewmodel
 
 @Composable
-fun PlaceCard (place: Place, navController: NavHostController){
+fun PlaceCard (place: Place, navController: NavHostController, placeViewmodel: PlaceViewmodel){
     Card (
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFE4E4E4),
@@ -73,6 +74,9 @@ fun PlaceCard (place: Place, navController: NavHostController){
                 color = Color.Black,
                 //textAlign = TextAlign.Center,
                 modifier = Modifier.padding(end = 22.dp)
+                    .clickable {
+                        placeViewmodel.placesList -= place
+                    }
             )
         }
     }
