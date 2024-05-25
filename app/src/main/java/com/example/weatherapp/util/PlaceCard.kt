@@ -43,8 +43,9 @@ fun PlaceCard (place: Place, navController: NavHostController, placeViewmodel: P
             .padding(horizontal = 22.dp)
             .padding(vertical = 12.dp)
             .clickable {
-                placeViewmodel.selectedPlace = place
+                placeViewmodel.setSelectedPlace(place)
                 navController.navigate(Screen.PlaceWeatherScreen.route)
+                placeViewmodel.selectedPlace.value?.let { Log.e("set Place", it.placeName) }
             },
         shape =RoundedCornerShape(22.dp),
     ){

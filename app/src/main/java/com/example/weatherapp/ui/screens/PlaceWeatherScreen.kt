@@ -3,40 +3,36 @@ package com.example.weatherapp.ui.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.weatherapp.data.api.util.Resource
 import com.example.weatherapp.data.model.WeatherData
-import com.example.weatherapp.model.Place
 import com.example.weatherapp.viewmodel.WeatherViewModel
-
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-
-
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.weatherapp.viewmodel.PlaceViewmodel
 
 
 @Composable
-fun PlaceWeatherScreen(navController: NavHostController, viewModel: WeatherViewModel = viewModel()) {
-    val weatherResource: Resource<WeatherData>? by viewModel.weatherResource.observeAsState()
-    val  cityText = when (weatherResource) {
-        is Resource.Success -> weatherResource?.data?.name
-        is Resource.Error -> weatherResource?.message
-        is Resource.Loading-> "Loading..."
-        is Resource.Empty -> "Empty"
-        else -> {"Nope"}
+fun PlaceWeatherScreen(navController: NavHostController,placeViewModel: PlaceViewmodel , weatherViewModel: WeatherViewModel = viewModel(), ) {
+    val selectedPlace by placeViewModel.selectedPlace.observeAsState()
+    val cityText = selectedPlace?.placeName ?: "No Place Selected"
+    val weatherResource: Resource<WeatherData>? by weatherViewModel.weatherResource.observeAsState()
+
+    LaunchedEffect(selectedPlace) {
+        selectedPlace?.let {
+            weatherViewModel.getWeatherData(it.placeName)
+        }
     }
+
     val temperatureText = when (weatherResource) {
         is Resource.Success -> weatherResource?.data?.weatherNumbers?.temperature
         else -> "No info"
@@ -60,7 +56,6 @@ fun PlaceWeatherScreen(navController: NavHostController, viewModel: WeatherViewM
         },
             modifier = Modifier
                 .width(150.dp)) {
-
         }
         Text(
             text = cityText?: "None",
@@ -87,13 +82,6 @@ fun PlaceWeatherScreen(navController: NavHostController, viewModel: WeatherViewM
             text = iconText.toString()?: "No info",
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier
-                .padding(vertical = 16.dp, horizontal = 16.dp)
-        )
-        ExtendedFloatingActionButton(
-            text = { "Click" },
-            onClick = { viewModel.getWeatherData("Bremen") },
-            icon = { Icon(Icons.Filled.Refresh, "") },
             modifier = Modifier
                 .padding(vertical = 16.dp, horizontal = 16.dp)
         )

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun WeatherApp() {
     val navController = rememberNavController();
-    val placeViewmodel = PlaceViewmodel();
+    val placeViewmodel = PlaceViewmodel()
     LaunchedEffect(true) {
         withContext(Dispatchers.IO) {
             placeViewmodel.placesList.forEach{place ->
@@ -98,7 +99,7 @@ fun WeatherNavHost(
             AddPlaceScreen(navController,placeViewmodel)
         }
         composable(route = Screen.PlaceWeatherScreen.route){
-            PlaceWeatherScreen(navController)
+            PlaceWeatherScreen(navController, placeViewmodel)
         }
     }
 }
