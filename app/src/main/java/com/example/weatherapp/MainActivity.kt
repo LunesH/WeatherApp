@@ -63,26 +63,9 @@ fun WeatherApp() {
             }
         }
     }
-    Scaffold(
-        topBar = {
-            Surface (shadowElevation = 16.dp) {
-                TopAppBar(
-                    title = {
-                        Text(
-                            text = stringResource(id = R.string.app_name),
-                            color = Color.Black
-                        )
-                    },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(
-                        containerColor = Color(
-                            0xffF5F5F5
-                        )
-                    ),
-                )
-            }
-        },
-        content = { innerPadding -> WeatherNavHost(navController, Modifier.padding(innerPadding),placeViewmodel) },
-    )
+    Scaffold { innerPadding ->
+        WeatherNavHost(navController, Modifier.padding(innerPadding), placeViewmodel)
+    }
 }
 
 @Composable

@@ -23,9 +23,13 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -34,57 +38,81 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
+import com.example.weatherapp.R
 import com.example.weatherapp.model.Place
+import com.example.weatherapp.util.BackButton
 import com.example.weatherapp.util.PlaceCard
 import com.example.weatherapp.viewmodel.PlaceViewmodel
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.CancellationToken
-import com.google.android.gms.tasks.CancellationTokenSource
-import com.google.android.gms.tasks.OnTokenCanceledListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPlaceScreen(navController: NavHostController, placeViewmodel: PlaceViewmodel) {
 
     var searchQuery by remember { mutableStateOf("") }
     var searchResult by remember { mutableStateOf("No search yet") }
+    Scaffold(
+        topBar = {
+            Surface (shadowElevation = 16.dp) {
+                TopAppBar(
+                    title = {
+                        Text(
+                            text = stringResource(id = R.string.app_name),
+                            color = Color.Black
+                        )
+                    },
+                    colors = TopAppBarDefaults.smallTopAppBarColors(
+                        containerColor = Color(
+                            0xffF5F5F5
+                        )
+                    )
+                )
+            }
+        },
+        content = { innerPadding ->
+            Modifier.padding(innerPadding)
 
-    //getLocation(LocalContext.current)
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .background(Color(0xffD2D2D2))
-    ) {
-        Spacer(modifier = Modifier.height(88.dp))
-        SearchBar(placeViewmodel) { query ->
-            searchQuery = query
-            searchResult = "Search query: $query"
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        PlaceCard(Place("Bremen", "location", 0.0, 0.0), navController, placeViewmodel)
-        Divider(
-            modifier = Modifier
-                .padding(horizontal = 24.dp)
-                .padding(vertical = 4.dp),
-            thickness = 2.dp,
-            color = Color(0xFFE4E4E4),
-        );
-        placeViewmodel.placesList.forEach { place ->
-            PlaceCard(place = place, navController = navController, placeViewmodel = placeViewmodel)
-        }
+            //getLocation(LocalContext.current)
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .background(Color(0xffD2D2D2))
+            ) {
+                Spacer(modifier = Modifier.height(88.dp))
+                SearchBar(placeViewmodel) { query ->
+                    searchQuery = query
+                    searchResult = "Search query: $query"
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                PlaceCard(Place("Bremen", "location", 0.0, 0.0), navController, placeViewmodel)
+                Divider(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .padding(vertical = 4.dp),
+                    thickness = 2.dp,
+                    color = Color(0xFFE4E4E4),
+                );
+                placeViewmodel.placesList.forEach { place ->
+                    PlaceCard(
+                        place = place,
+                        navController = navController,
+                        placeViewmodel = placeViewmodel
+                    )
+                }
 
-    }
+            }
+        })
 }
 
 
