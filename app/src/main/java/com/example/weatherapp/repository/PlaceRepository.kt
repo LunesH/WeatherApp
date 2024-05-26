@@ -50,11 +50,8 @@ class PlaceRepository {
                 }
             }
         }
-
            return placeList
-
-
-        }
+    }
 
 
 

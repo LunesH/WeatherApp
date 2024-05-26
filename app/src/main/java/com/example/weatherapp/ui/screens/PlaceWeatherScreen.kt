@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.weatherapp.R
 import com.example.weatherapp.ui.components.BackButton
+import com.example.weatherapp.ui.components.DailyValuesCard
 import com.example.weatherapp.ui.components.WeatherInfoImage
 import com.example.weatherapp.ui.components.WeatherInfoTexts
 import com.example.weatherapp.viewmodel.PlaceViewmodel
@@ -74,6 +75,7 @@ fun PlaceWeatherScreen(navController: NavHostController,placeViewModel: PlaceVie
         ) {
             WeatherInfoTexts(cityText, weatherResource)
             WeatherInfoImage(weatherResource)
+            DailyValuesCard()
         }
     }
 

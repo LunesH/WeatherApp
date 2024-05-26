@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -23,7 +24,9 @@ fun WeatherInfoImage(weatherResource: Resource<WeatherData>){
         is Resource.Success -> true
         else -> false
     }
-    Box(modifier = Modifier.heightIn(120.dp, 120.dp)){
+    Box(modifier = Modifier
+                    .heightIn(150.dp,150.dp)
+                    .padding(top= 8.dp, bottom = 8.dp)){
         if (showImage) {
             Image(
                 painter = iconMapper.getIconResource(iconId = iconID),

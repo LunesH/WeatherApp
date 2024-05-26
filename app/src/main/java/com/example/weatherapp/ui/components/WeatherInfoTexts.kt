@@ -1,5 +1,6 @@
 package com.example.weatherapp.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -25,18 +26,27 @@ fun WeatherInfoTexts(cityText: String, weatherResource: Resource<WeatherData>){
         is Resource.Loading -> "Loading..."
         else -> "No info"
     }
+    val tempMin = when (weatherResource) {
+        is Resource.Success -> weatherResource.data?.weatherNumbers?.tempMin
+        is Resource.Loading -> "Loading..."
+        else -> "No info"
+    }
+    val tempMax = when (weatherResource) {
+        is Resource.Success -> weatherResource.data?.weatherNumbers?.tempMax
+        is Resource.Loading -> "Loading..."
+        else -> "No info"
+    }
     Text(
         text = cityText ,
         textAlign = TextAlign.Center,
         fontWeight = FontWeight.Bold,
         style = MaterialTheme.typography.headlineMedium,
         modifier = Modifier
-            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .padding( horizontal = 16.dp)
     )
     Row(verticalAlignment = Alignment.Bottom) {
         Text(
             text = temperatureText.toString(),
-            textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier
@@ -44,10 +54,17 @@ fun WeatherInfoTexts(cityText: String, weatherResource: Resource<WeatherData>){
         )
         Text(
             text = weatherDescriptionText.toString(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.headlineSmall,
+            style = MaterialTheme.typography.titleMedium,
             modifier = Modifier
-                .padding(vertical = 8.dp, horizontal = 8.dp)
+                .padding(vertical = 8.dp)
         )
     }
+    Text(
+        text = tempMin.toString() +"-"+ tempMax.toString(),
+        textAlign = TextAlign.Center,
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = Modifier
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+    )
 }
+

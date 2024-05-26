@@ -7,8 +7,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class WeatherApi {
-
-    //the companion object is an equivalent to the static keyword from java
     companion object Factory{
         private val baseUrl = "https://api.openweathermap.org/data/2.5/"
         val weatherClient by lazy { createApi(baseUrl) }
