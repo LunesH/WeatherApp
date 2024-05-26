@@ -19,9 +19,7 @@ class WeatherViewModel(application : Application) : AndroidViewModel(application
     private val _weatherResource: MutableLiveData<Resource<WeatherData>> = MutableLiveData(Resource.Empty())
 
     fun getWeatherData(location: String){
-        //set resource type to loading
         _weatherResource.value = Resource.Loading()
-
         viewModelScope.launch {
             _weatherResource.value = weatherRepository.getCurrentWeatherData(location, apiKey)
         }

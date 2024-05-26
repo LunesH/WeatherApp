@@ -87,8 +87,9 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.4.0")
     implementation ("com.squareup.okhttp3:logging-interceptor:4.4.0")
 
-    //picasso
-    implementation ("com.squareup.picasso:picasso:2.71828")
+    //coil for image loading
+    implementation("io.coil-kt:coil:2.1.0")
+    implementation("io.coil-kt:coil-compose:2.1.0")
 
 
 }

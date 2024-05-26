@@ -38,15 +38,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
-import com.example.weatherapp.R
 import com.example.weatherapp.model.Place
-import com.example.weatherapp.util.BackButton
-import com.example.weatherapp.util.PlaceCard
+import com.example.weatherapp.ui.components.PlaceCard
+import com.example.weatherapp.ui.components.TopAppTitle
 import com.example.weatherapp.viewmodel.PlaceViewmodel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -67,10 +65,7 @@ fun AddPlaceScreen(navController: NavHostController, placeViewmodel: PlaceViewmo
             Surface (shadowElevation = 16.dp) {
                 TopAppBar(
                     title = {
-                        Text(
-                            text = stringResource(id = R.string.app_name),
-                            color = Color.Black
-                        )
+                        TopAppTitle()
                     },
                     colors = TopAppBarDefaults.smallTopAppBarColors(
                         containerColor = Color(
@@ -82,8 +77,6 @@ fun AddPlaceScreen(navController: NavHostController, placeViewmodel: PlaceViewmo
         },
         content = { innerPadding ->
             Modifier.padding(innerPadding)
-
-            //getLocation(LocalContext.current)
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
