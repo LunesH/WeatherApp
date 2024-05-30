@@ -16,6 +16,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class PlaceRepository {
     val apiKey = "CAIdlznnUt41C80geKnq5GMQOXChOPHXe5x1vfY8NX0";
@@ -89,4 +91,47 @@ class PlaceRepository {
 
 
         }
+
+
+    //reverse Geocoding APi
+    suspend fun getPlaceName(place: Place): Place {
+        var geocodingApiKey = "efd4eb38672f855233e1f31b9c6c4d54"
+        var newPlace = place
+        Log.e("place",place.toString())
+        withContext(Dispatchers.IO) {
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url("http://api.openweathermap.org/geo/1.0/reverse?lat="+place.latitude+"&lon="+place.longitude+"&limit=5&appid="+geocodingApiKey)
+                .get()
+                .build()
+
+            var response = client.newCall(request).execute();
+            val responseBody = response.body
+
+            val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy kk:mm")
+            val date = LocalDateTime
+                .now()
+                .format(formatter)
+
+            if (response.isSuccessful && responseBody != null) {
+                val bodyString = responseBody.string()
+                try {
+                    val jsonArray = JsonParser.parseString(bodyString).asJsonArray
+                    val jsonObject = jsonArray.get(0).asJsonObject
+                    val gson = Gson()
+
+                    val geoCodingResponse = gson.fromJson(jsonObject, GeoCodingResponse::class.java)
+                    newPlace = Place(geoCodingResponse.name,date,geoCodingResponse.lat,geoCodingResponse.lon)
+
+                    Log.e("response",newPlace.toString())
+                }catch(e:Exception){
+                    Log.e("exception",e.message.toString())
+                }
+            }
+        }
+
+        return newPlace;
+
+
+    }
     }

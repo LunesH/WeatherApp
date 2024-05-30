@@ -19,6 +19,7 @@ import com.example.weatherapp.ui.screens.AddPlaceScreen
 import com.example.weatherapp.ui.screens.PlaceWeatherScreen
 import com.example.weatherapp.ui.screens.Screen
 import com.example.weatherapp.ui.theme.WeatherAppTheme
+import com.example.weatherapp.viewmodel.LocationViewmodel
 import com.example.weatherapp.viewmodel.PlaceViewmodel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -44,6 +45,7 @@ class MainActivity : ComponentActivity() {
 fun WeatherApp() {
     val navController = rememberNavController();
     val placeViewmodel = PlaceViewmodel()
+    val locationViewmodel = LocationViewmodel()
     LaunchedEffect(true) {
         withContext(Dispatchers.IO) {
             placeViewmodel.placesList.forEach{place ->
@@ -52,7 +54,7 @@ fun WeatherApp() {
         }
     }
     Scaffold { innerPadding ->
-        WeatherNavHost(navController, Modifier.padding(innerPadding), placeViewmodel)
+        WeatherNavHost(navController, Modifier.padding(innerPadding), placeViewmodel,locationViewmodel)
     }
 }
 
@@ -60,14 +62,15 @@ fun WeatherApp() {
 fun WeatherNavHost(
     navController: NavHostController,
     padding: Modifier,
-    placeViewmodel: PlaceViewmodel
+    placeViewmodel: PlaceViewmodel,
+    locationViewmodel: LocationViewmodel
 ) {
     NavHost(
         navController = navController,
         startDestination = Screen.AddPlaceScreen.route,
         ){
         composable(route = Screen.AddPlaceScreen.route){
-            AddPlaceScreen(navController,placeViewmodel)
+            AddPlaceScreen(navController,placeViewmodel,locationViewmodel)
         }
         composable(route = Screen.PlaceWeatherScreen.route){
             PlaceWeatherScreen(navController, placeViewmodel)

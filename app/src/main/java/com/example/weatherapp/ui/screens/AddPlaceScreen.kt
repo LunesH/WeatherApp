@@ -1,9 +1,5 @@
 package com.example.weatherapp.ui.screens
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -40,14 +36,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
 import com.example.weatherapp.model.Place
+import com.example.weatherapp.ui.components.LocationCard
 import com.example.weatherapp.ui.components.PlaceCard
 import com.example.weatherapp.ui.components.TopAppTitle
+import com.example.weatherapp.viewmodel.LocationViewmodel
 import com.example.weatherapp.viewmodel.PlaceViewmodel
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
@@ -56,31 +51,30 @@ import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddPlaceScreen(navController: NavHostController, placeViewmodel: PlaceViewmodel) {
-
+fun AddPlaceScreen(
+    navController: NavHostController,
+    placeViewmodel: PlaceViewmodel,
+    locationViewmodel: LocationViewmodel
+) {
     var searchQuery by remember { mutableStateOf("") }
     var searchResult by remember { mutableStateOf("No search yet") }
+
+
     Scaffold(
         topBar = {
-            Surface (shadowElevation = 16.dp) {
+            Surface(shadowElevation = 16.dp) {
                 TopAppBar(
-                    title = {
-                        TopAppTitle()
-                    },
-                    colors = TopAppBarDefaults.smallTopAppBarColors(
-                        containerColor = Color(
-                            0xffF5F5F5
-                        )
-                    )
+                    title = { TopAppTitle() },
+                    colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = Color(0xffF5F5F5))
                 )
             }
         },
         content = { innerPadding ->
-            Modifier.padding(innerPadding)
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
                     .background(Color(0xffD2D2D2))
+                    .padding(innerPadding)
             ) {
                 Spacer(modifier = Modifier.height(88.dp))
                 SearchBar(placeViewmodel) { query ->
@@ -88,14 +82,14 @@ fun AddPlaceScreen(navController: NavHostController, placeViewmodel: PlaceViewmo
                     searchResult = "Search query: $query"
                 }
                 Spacer(modifier = Modifier.height(10.dp))
-                PlaceCard(Place("Bremen", "location", 0.0, 0.0), navController, placeViewmodel)
+                LocationCard(locationViewmodel.userLocation.value, navController, placeViewmodel,locationViewmodel)
                 Divider(
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .padding(vertical = 4.dp),
                     thickness = 2.dp,
-                    color = Color(0xFFE4E4E4),
-                );
+                    color = Color(0xFFE4E4E4)
+                )
                 placeViewmodel.placesList.forEach { place ->
                     PlaceCard(
                         place = place,
@@ -103,10 +97,12 @@ fun AddPlaceScreen(navController: NavHostController, placeViewmodel: PlaceViewmo
                         placeViewmodel = placeViewmodel
                     )
                 }
-
             }
-        })
+        }
+    )
 }
+
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -217,36 +213,3 @@ fun SearchBar(placeViewmodel: PlaceViewmodel, onSearch: (String) -> Unit) {
     }
 }
 
-fun getLocation(context:Context){
-    lateinit var fusedLocationClient: FusedLocationProviderClient
-    fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-    if (ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) != PackageManager.PERMISSION_GRANTED
-    ) {
-        Log.e("res",ActivityCompat.checkSelfPermission(context,
-            Manifest.permission.ACCESS_FINE_LOCATION).toString())
-        // TODO: Consider calling
-        //    ActivityCompat#requestPermissions
-        // here to request the missing permissions, and then overriding
-        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-        //                                          int[] grantResults)
-        // to handle the case where the user grants the permission. See the documentation
-        // for ActivityCompat#requestPermissions for more details.
-        return
-    }
-    fusedLocationClient.lastLocation
-        .addOnSuccessListener { location->
-            if (location != null) {
-                // use your location object
-                // get latitude , longitude and other info from this
-                Log.e("loc","sdada")
-            }
-
-        }
-
-}
