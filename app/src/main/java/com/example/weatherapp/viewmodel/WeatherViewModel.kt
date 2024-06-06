@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.data.api.util.Resource
 import com.example.weatherapp.data.model.WeatherData
+import com.example.weatherapp.model.HourlyWeatherData
 import com.example.weatherapp.repository.WeatherRepository
 import kotlinx.coroutines.launch
 
@@ -18,11 +19,23 @@ class WeatherViewModel(application : Application) : AndroidViewModel(application
         get() = _weatherResource
     private val _weatherResource: MutableLiveData<Resource<WeatherData>> = MutableLiveData(Resource.Empty())
 
+    val hourlyWeatherResource: LiveData<Resource<HourlyWeatherData>>
+        get()= _hourlyWeatherResource
+    private val _hourlyWeatherResource: MutableLiveData<Resource<HourlyWeatherData>> = MutableLiveData(Resource.Empty())
+
     fun getWeatherData(location: String){
         _weatherResource.value = Resource.Loading()
         viewModelScope.launch {
             _weatherResource.value = weatherRepository.getCurrentWeatherData(location, apiKey)
         }
     }
+
+    fun getHourlyWeatherData(location: String){
+        _hourlyWeatherResource.value =Resource.Loading()
+        viewModelScope.launch {
+            _hourlyWeatherResource.value =weatherRepository.getHourlyWeatherData(location, apiKey)
+        }
+    }
+
 
 }

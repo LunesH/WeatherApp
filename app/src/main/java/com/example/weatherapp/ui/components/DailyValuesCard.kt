@@ -3,7 +3,6 @@ package com.example.weatherapp.ui.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,21 +16,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.weatherapp.R
+import com.example.weatherapp.data.api.util.Resource
+import com.example.weatherapp.model.DataOfSpecificHour
+import com.example.weatherapp.model.HourlyWeatherData
+import com.example.weatherapp.util.IconMapper
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Date
 
 @Composable
-fun DailyValuesCard() {
-    val testList: List<Test> = listOf(
-        Test("test1"),
-        Test("test2"),
-        Test("test3"),
-        Test("test4"),
-        Test("test5"),
-        Test("test6"),
-        Test("test7")
-    )
+fun DailyValuesCard(hourlyWeatherResource: Resource<HourlyWeatherData>) {
+    val hasFinishedLoading= when(hourlyWeatherResource){
+        is Resource.Success -> true
+        else -> false
+    }
+    val dataList:List<DataOfSpecificHour> = when (hourlyWeatherResource) {
+        is Resource.Success -> hourlyWeatherResource.data?.listOfDataPerHour!!
+        is Resource.Loading -> listOf()
+        else -> listOf()
+    }
+
     Card(
         colors = CardDefaults.cardColors(containerColor = Color(0xFFE4E4E4)),
         elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
@@ -39,28 +45,38 @@ fun DailyValuesCard() {
         shape = RoundedCornerShape(22.dp),
     ) {
         LazyRow(
-            modifier = Modifier.fillMaxWidth()
-            .padding(top = 16.dp, bottom = 16.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, bottom = 16.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            items(testList) { test ->
-                HourlyForecast(test.test)
+            if(hasFinishedLoading) {
+                items(dataList) {  data->
+                    HourlyForecast(data.time, data.weather[0].icon, data.weatherNumbers.temperature)
+                }
             }
         }
     }
 }
 
 @Composable
-fun HourlyForecast(test: String) {
+fun HourlyForecast(time: String, iconID: String, temperature: Double) {
+    val iconMapper = IconMapper();
+    val pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    var localDateTime = LocalDateTime.parse(time, pattern)
+    localDateTime=localDateTime.withMinute(0)
+    val hour =localDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+
     Column (modifier = Modifier.width(80.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = test)
+        Text(text = hour)
         Image(
-            painter = painterResource(id = R.drawable.sun),
+            painter = iconMapper.getIconResource(iconId = iconID),
             contentDescription = "weatherIcon",
             modifier = Modifier.width(30.dp))
-        Text(text = test)
+        Text(text = temperature.toString())
     }
 }
 
-data class Test(val test: String)
+
 

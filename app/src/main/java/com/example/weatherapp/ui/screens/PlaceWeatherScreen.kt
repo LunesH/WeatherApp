@@ -22,10 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.weatherapp.R
+import com.example.weatherapp.model.HourlyWeatherData
 import com.example.weatherapp.ui.components.BackButton
 import com.example.weatherapp.ui.components.DailyValuesCard
 import com.example.weatherapp.ui.components.WeatherInfoImage
 import com.example.weatherapp.ui.components.WeatherInfoTexts
+import com.example.weatherapp.util.IconMapper
 import com.example.weatherapp.viewmodel.PlaceViewmodel
 
 
@@ -35,9 +37,11 @@ fun PlaceWeatherScreen(navController: NavHostController,placeViewModel: PlaceVie
     val selectedPlace by placeViewModel.selectedPlace.observeAsState()
     val cityText = selectedPlace?.placeName ?: "No Place Selected"
     val weatherResource: Resource<WeatherData>? by weatherViewModel.weatherResource.observeAsState()
+    val hourlyWeatherResource: Resource<HourlyWeatherData>? by weatherViewModel.hourlyWeatherResource.observeAsState()
     LaunchedEffect(selectedPlace) {
         selectedPlace?.let {
             weatherViewModel.getWeatherData(it.placeName)
+            weatherViewModel.getHourlyWeatherData(it.placeName)
         }
     }
     Scaffold(
@@ -63,19 +67,27 @@ fun PlaceWeatherScreen(navController: NavHostController,placeViewModel: PlaceVie
         },
         content = { innerPadding ->
             Modifier.padding(innerPadding)
-            weatherResource?.let { PlaceWeatherScreenContent(cityText, it) }
+            weatherResource?.let { hourlyWeatherResource?.let { it1 ->
+                PlaceWeatherScreenContent(cityText, it,
+                    it1
+                )
+            } }
         }
     )
 }
     @Composable
-    fun PlaceWeatherScreenContent( cityText: String, weatherResource: Resource<WeatherData>){
+    fun PlaceWeatherScreenContent(
+        cityText: String,
+        weatherResource: Resource<WeatherData>,
+        hourlyWeatherResource: Resource<HourlyWeatherData>
+    ){
         Column(
             modifier = Modifier
                 .padding(top = 80.dp, start = 16.dp, end = 16.dp)
         ) {
             WeatherInfoTexts(cityText, weatherResource)
             WeatherInfoImage(weatherResource)
-            DailyValuesCard()
+            DailyValuesCard(hourlyWeatherResource)
         }
     }
 
