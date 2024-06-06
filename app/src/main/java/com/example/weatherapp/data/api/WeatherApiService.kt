@@ -9,7 +9,8 @@ interface WeatherApiService {
     @GET("weather?")
     suspend fun getCurrentWeatherData(
         @Query("q") location: String?,
-        @Query("appid") apiKey: String?
+        @Query("appid") apiKey: String?,
+        @Query("units") unit: String="metric"
     ):WeatherData
 
 }
