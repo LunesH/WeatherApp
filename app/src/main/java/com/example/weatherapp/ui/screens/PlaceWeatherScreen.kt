@@ -34,6 +34,7 @@ import com.example.weatherapp.viewmodel.PlaceViewmodel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaceWeatherScreen(navController: NavHostController,placeViewModel: PlaceViewmodel , weatherViewModel: WeatherViewModel = viewModel(), ) {
+    //Todo: bei den Temperaturen runden, sodass keine Kommastellen angezeigt werden , außerdem ° ergänzen
     val selectedPlace by placeViewModel.selectedPlace.observeAsState()
     val cityText = selectedPlace?.placeName ?: "No Place Selected"
     val weatherResource: Resource<WeatherData>? by weatherViewModel.weatherResource.observeAsState()
