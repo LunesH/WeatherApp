@@ -19,6 +19,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,7 +36,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.weatherapp.MainActivity
@@ -92,13 +95,26 @@ fun AddPlaceScreen(
                     thickness = 2.dp,
                     color = Color(0xFFE4E4E4)
                 )
-                placeViewmodel.placesList.forEach { place ->
-                    PlaceCard(
-                        place = place,
-                        navController = navController,
-                        placeViewmodel = placeViewmodel
+                if (placeViewmodel.placesList.isEmpty()){
+                    Text(
+                        text = "Add a place to see the local weather" ,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.headlineMedium,
+                        modifier = Modifier
+                            .padding( horizontal = 32.dp)
+                            .padding(top = 32.dp)
                     )
+                }else{
+                    placeViewmodel.placesList.forEach { place ->
+                        PlaceCard(
+                            place = place,
+                            navController = navController,
+                            placeViewmodel = placeViewmodel
+                        )
+                    }
                 }
+
             }
         }
     )
