@@ -17,6 +17,7 @@ import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class PlaceRepository {
@@ -108,9 +109,10 @@ class PlaceRepository {
             var response = client.newCall(request).execute();
             val responseBody = response.body
 
+            val germanZoneId = ZoneId.of("Europe/Berlin")
             val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy kk:mm")
             val date = LocalDateTime
-                .now()
+                .now(germanZoneId)
                 .format(formatter)
 
             if (response.isSuccessful && responseBody != null) {
