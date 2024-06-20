@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id ("kotlin-kapt")
 }
 
 android {
@@ -76,7 +77,6 @@ dependencies {
     //navigation
     val navVersion = "2.7.1"
     implementation ("androidx.navigation:navigation-compose:$navVersion")
-
     //autocomplete API
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -91,5 +91,10 @@ dependencies {
     implementation("io.coil-kt:coil:2.1.0")
     implementation("io.coil-kt:coil-compose:2.1.0")
 
-
+    //room
+    var room_version = "2.6.1"
+    implementation ("androidx.room:room-runtime:$room_version")
+    implementation ("androidx.room:room-ktx:$room_version")
+    annotationProcessor ("androidx.room:room-compiler:2.5.2")
+    kapt ("androidx.room:room-compiler:2.5.2")
 }

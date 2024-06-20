@@ -79,7 +79,7 @@ class PlaceRepository {
                         val gson = Gson()
 
                         val geoCodingResponse = gson.fromJson(jsonObject, GeoCodingResponse::class.java)
-                        newPlace = Place(place.placeName,place.creationDate,geoCodingResponse.lat,geoCodingResponse.lon)
+                        newPlace = Place(placeName = place.placeName, creationDate = place.creationDate, latitude = geoCodingResponse.lat, longitude = geoCodingResponse.lon)
 
                     }catch(e:Exception){
                         Log.e("exception",e.message.toString())
@@ -121,7 +121,7 @@ class PlaceRepository {
                     val gson = Gson()
 
                     val geoCodingResponse = gson.fromJson(jsonObject, GeoCodingResponse::class.java)
-                    newPlace = Place(geoCodingResponse.name,date,geoCodingResponse.lat,geoCodingResponse.lon)
+                    newPlace = Place(placeName = geoCodingResponse.name, creationDate = date, latitude = geoCodingResponse.lat, longitude = geoCodingResponse.lon)
 
                     Log.e("response",newPlace.toString())
                 }catch(e:Exception){

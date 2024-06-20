@@ -34,9 +34,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.weatherapp.MainActivity
 import com.example.weatherapp.model.Place
 import com.example.weatherapp.ui.components.LocationCard
 import com.example.weatherapp.ui.components.PlaceCard
@@ -108,14 +110,24 @@ fun AddPlaceScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(placeViewmodel: PlaceViewmodel, onSearch: (String) -> Unit) {
+
+    var context = LocalContext.current
+
+
     var searchQuery by remember { mutableStateOf("") }
     var addedPlace by remember {
-        mutableStateOf(Place("", "", 0.0, 0.0))
+        mutableStateOf(Place(placeName = "", creationDate = "-", latitude = 0.0, longitude = 0.0))
     }
     LaunchedEffect(addedPlace) {
-        if (addedPlace != Place("", "", 0.0, 0.0)) {
+        if (addedPlace != Place(placeName = "", creationDate = "-", latitude = 0.0, longitude = 0.0)) {
             withContext(Dispatchers.IO) {
+                var newPlace = addedPlace
                 placeViewmodel.updatePlaceCoordinates(addedPlace)
+
+                val index = placeViewmodel.placesList.indexOfFirst { newPlace.placeName == it.placeName }
+                newPlace = placeViewmodel.placesList[index]
+                MainActivity.database.placeDao().insert(Place(placeName = newPlace.placeName, creationDate = newPlace.creationDate, latitude = newPlace.latitude, longitude = newPlace.longitude))
+
             }
         }
 
@@ -193,10 +205,10 @@ fun SearchBar(placeViewmodel: PlaceViewmodel, onSearch: (String) -> Unit) {
                                     val date = LocalDateTime
                                         .now()
                                         .format(formatter)
-                                    var place = Place(placename, date, 0.0, 0.0)
+                                    var place = Place(placeName = placename, creationDate = date, latitude = 0.0, longitude =  0.0)
                                     placeViewmodel.placesList += place
                                     searchQuery = "";
-                                    //trigger coordination update
+                                    //trigger coordinates update
                                     addedPlace = place
                                 }
                         ) {

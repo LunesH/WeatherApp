@@ -17,6 +17,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,13 +29,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.weatherapp.MainActivity
 import com.example.weatherapp.model.Place
 import com.example.weatherapp.ui.screens.Screen
 import com.example.weatherapp.viewmodel.PlaceViewmodel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
-fun PlaceCard (place: Place, navController: NavHostController, placeViewmodel: PlaceViewmodel){
-    Card (
+fun PlaceCard(
+    place: Place,
+    navController: NavHostController,
+    placeViewmodel: PlaceViewmodel
+) {
+
+    Card(
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFE4E4E4),
         ),
@@ -45,30 +59,30 @@ fun PlaceCard (place: Place, navController: NavHostController, placeViewmodel: P
                 navController.navigate(Screen.PlaceWeatherScreen.route)
                 placeViewmodel.selectedPlace.value?.let { Log.e("set Place", it.placeName) }
             },
-        shape =RoundedCornerShape(22.dp),
-    ){
-        Row (
+        shape = RoundedCornerShape(22.dp),
+    ) {
+        Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
-        ){
+        ) {
             Column(
-                modifier = Modifier
-                    .padding(22.dp),
+                modifier = Modifier.padding(22.dp),
             ) {
-                Row (){
+                Row {
                     Text(
                         text = place.placeName,
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp,
                         color = Color.Black,
                     )
-                    if (place.creationDate.equals("location")){
-                        Column (horizontalAlignment = Alignment.End){
+                    if (place.creationDate == "location") {
+                        Column(horizontalAlignment = Alignment.End) {
                             Icon(
                                 Icons.Default.Place,
                                 contentDescription = "Location",
-                                modifier = Modifier.padding(top = 4.dp).size(26.dp))
+                                modifier = Modifier.padding(top = 4.dp).size(26.dp)
+                            )
                         }
                     }
                 }
@@ -78,7 +92,6 @@ fun PlaceCard (place: Place, navController: NavHostController, placeViewmodel: P
                     fontSize = 18.sp,
                     color = Color.Black,
                 )
-
             }
             if (place.creationDate.equals("location")){
                 Icon(
@@ -86,23 +99,27 @@ fun PlaceCard (place: Place, navController: NavHostController, placeViewmodel: P
                     contentDescription = "Location",
                     modifier = Modifier.padding(end = 22.dp)
                         .clickable {
-                            Log.e("refresh","refresh")
                         })
-            }else{
+            } else {
                 Text(
                     text = "x",
                     fontWeight = FontWeight.Bold,
                     fontSize = 28.sp,
                     color = Color.Black,
-                    //textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(end = 28.dp)
                         .clickable {
                             placeViewmodel.placesList -= place
+                            CoroutineScope(Dispatchers.IO).launch {
+                                try {
+                                    MainActivity.database.placeDao().delete(place)
+                                } catch (e: Exception) {
+                                    Log.e("Exception", "Error deleting place: ${e.message}", e)
+                                }
+                            }
                         }
                 )
             }
-
         }
     }
 }

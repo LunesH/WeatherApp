@@ -9,7 +9,7 @@ import com.example.weatherapp.repository.PlaceRepository
 class LocationViewmodel : ViewModel() {
     private val placeRepository = PlaceRepository()
 
-    var userLocation = mutableStateOf(Place("No Location","-",0.0,0.0))
+    var userLocation = mutableStateOf(Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0))
 
     suspend fun getPlaceName(place: Place){
         try {

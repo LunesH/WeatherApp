@@ -54,13 +54,13 @@ fun LocationCard(
 ) {
 
     val context = LocalContext.current
-    var userLocation by remember { mutableStateOf(Place("No Location","-",0.0,0.0)) }
+    var userLocation by remember { mutableStateOf(Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0)) }
     var locationPermission by remember { mutableStateOf(false) }
     var getLocationPlaceName by remember {
        mutableStateOf(false)
     }
     LaunchedEffect(getLocationPlaceName) {
-        if (userLocation != Place("No Location","-",0.0,0.0)) {
+        if (userLocation != Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0)) {
             withContext(Dispatchers.IO) {
                 locationViewmodel.getPlaceName(locationViewmodel.userLocation.value)
             }
@@ -151,7 +151,7 @@ fun LocationCard(
                         getLastKnownLocation(context) { place ->
                             userLocation = place
                             Log.e("res",place.toString())
-                            locationViewmodel.userLocation.value = Place("Get Location","Now",place.latitude,place.longitude)
+                            locationViewmodel.userLocation.value = Place(placeName = "Get Location", creationDate = "Now", latitude = place.latitude, longitude = place.longitude)
                             getLocationPlaceName = !getLocationPlaceName
                         }
                     })
@@ -179,17 +179,16 @@ fun getLastKnownLocation(context: Context, onLocationResult: (Place) -> Unit) {
             if (location != null) {
                 val locationString = "Latitude: ${location.latitude}, Longitude: ${location.longitude}"
                 Log.e("Location", locationString)
-                onLocationResult(Place("-","-",location.latitude,location.longitude))
+                onLocationResult(Place(placeName = "-", creationDate = "-", latitude = location.latitude, longitude = location.longitude))
             } else {
                 //Location not found
-                onLocationResult(Place("No Location","-",0.0,0.0))
+                onLocationResult(Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0))
             }
         }.addOnFailureListener {
             //Failed to get Location
-            onLocationResult(Place("No Location","-",0.0,0.0))
+            onLocationResult(Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0))
         }
     } else {
         //no permission
-        onLocationResult(Place("No Location","-",0.0,0.0))
-    }
+        onLocationResult(Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0))    }
 }
