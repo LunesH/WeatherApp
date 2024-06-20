@@ -3,6 +3,7 @@ package com.example.weatherapp.ui.components
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Looper
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -43,6 +44,9 @@ import com.example.weatherapp.ui.screens.Screen
 import com.example.weatherapp.viewmodel.LocationViewmodel
 import com.example.weatherapp.viewmodel.PlaceViewmodel
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -199,14 +203,51 @@ fun getLastKnownLocation(context: Context, onLocationResult: (Place) -> Unit) {
                 Log.e("Location", locationString)
                 onLocationResult(Place(placeName = "-", creationDate = "-", latitude = location.latitude, longitude = location.longitude))
             } else {
-                //Location not found
-                onLocationResult(Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0))
+                //get new location data
+                requestNewLocationData(context, onLocationResult)
             }
-        }.addOnFailureListener {
-            //Failed to get Location
-            onLocationResult(Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0))
+        }.addOnFailureListener { exception ->
+            Log.e("Exception", "${exception.message}")
+            onLocationResult(Place(placeName = "Location failed", creationDate = "-", latitude = 0.0, longitude = 0.0))
         }
     } else {
-        //no permission
-        onLocationResult(Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0))    }
+        onLocationResult(Place(placeName = "No Permission", creationDate = "-", latitude = 0.0, longitude = 0.0))
+    }
+}
+
+private fun requestNewLocationData(context: Context, onLocationResult: (Place) -> Unit) {
+    val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+    val locationRequest = LocationRequest.create().apply {
+        interval = 10000 // 10 seconds
+        fastestInterval = 5000 // 5 seconds
+        priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+    }
+
+    if (ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED ||
+        ActivityCompat.checkSelfPermission(
+            context,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
+    ) {
+        fusedLocationClient.requestLocationUpdates(locationRequest, object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                fusedLocationClient.removeLocationUpdates(this)
+                if (locationResult != null && locationResult.locations.isNotEmpty()) {
+                    val location = locationResult.locations[0]
+                    val locationString = "Latitude: ${location.latitude}, Longitude: ${location.longitude}"
+                    Log.e("Location", locationString)
+                    onLocationResult(Place(placeName = "-", creationDate = "-", latitude = location.latitude, longitude = location.longitude))
+                } else {
+                    Log.e("LocationError", "New location is null")
+                    onLocationResult(Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0))
+                }
+            }
+        }, Looper.getMainLooper())
+    } else {
+        Log.e("LocationError", "No location permission")
+        onLocationResult(Place(placeName = "No Permission", creationDate = "-", latitude = 0.0, longitude = 0.0))
+    }
 }
