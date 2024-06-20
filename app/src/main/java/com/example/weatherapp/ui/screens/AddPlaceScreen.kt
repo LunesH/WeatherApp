@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -103,17 +104,23 @@ fun AddPlaceScreen(
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier
-                            .padding( horizontal = 32.dp)
+                            .padding(horizontal = 32.dp)
                             .padding(top = 32.dp)
                     )
                 }else{
-                    placeViewmodel.placesList.forEach { place ->
-                        PlaceCard(
-                            place = place,
-                            navController = navController,
-                            placeViewmodel = placeViewmodel
-                        )
+                    LazyColumn (modifier = Modifier.fillMaxHeight()){
+                        placeViewmodel.placesList.forEach { place ->
+                            item {
+                                PlaceCard(
+                                place = place,
+                                navController = navController,
+                                placeViewmodel = placeViewmodel
+                                )
+                            }
+
+                        }
                     }
+
                 }
 
             }
@@ -222,10 +229,19 @@ fun SearchBar(placeViewmodel: PlaceViewmodel, onSearch: (String) -> Unit) {
                                     val date = LocalDateTime
                                         .now()
                                         .format(formatter)
-                                    var place = Place(placeName = placename, creationDate = date, latitude = 0.0, longitude =  0.0)
-                                    placeViewmodel.placesList.forEach{ it ->
-                                        if (it.placeName.equals(place.placeName)){
-                                            val toast = Toast.makeText(context, "Place "+place.placeName+" already added!", Toast.LENGTH_SHORT) // in Activity
+                                    var place = Place(
+                                        placeName = placename,
+                                        creationDate = date,
+                                        latitude = 0.0,
+                                        longitude = 0.0
+                                    )
+                                    placeViewmodel.placesList.forEach { it ->
+                                        if (it.placeName.equals(place.placeName)) {
+                                            val toast = Toast.makeText(
+                                                context,
+                                                "Place " + place.placeName + " already added!",
+                                                Toast.LENGTH_SHORT
+                                            ) // in Activity
                                             toast.show()
 
                                             return@clickable
