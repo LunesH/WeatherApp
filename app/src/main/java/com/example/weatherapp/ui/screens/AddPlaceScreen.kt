@@ -1,5 +1,6 @@
 package com.example.weatherapp.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -222,6 +223,14 @@ fun SearchBar(placeViewmodel: PlaceViewmodel, onSearch: (String) -> Unit) {
                                         .now()
                                         .format(formatter)
                                     var place = Place(placeName = placename, creationDate = date, latitude = 0.0, longitude =  0.0)
+                                    placeViewmodel.placesList.forEach{ it ->
+                                        if (it.placeName.equals(place.placeName)){
+                                            val toast = Toast.makeText(context, "Place "+place.placeName+" already added!", Toast.LENGTH_SHORT) // in Activity
+                                            toast.show()
+
+                                            return@clickable
+                                        }
+                                    }
                                     placeViewmodel.placesList += place
                                     searchQuery = "";
                                     //trigger coordinates update
