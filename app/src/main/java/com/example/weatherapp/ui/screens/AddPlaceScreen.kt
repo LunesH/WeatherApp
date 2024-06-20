@@ -126,7 +126,7 @@ fun SearchBar(placeViewmodel: PlaceViewmodel, onSearch: (String) -> Unit) {
 
                 val index = placeViewmodel.placesList.indexOfFirst { newPlace.placeName == it.placeName }
                 newPlace = placeViewmodel.placesList[index]
-                MainActivity.database.placeDao().insert(Place(placeName = newPlace.placeName, creationDate = newPlace.creationDate, latitude = newPlace.latitude, longitude = newPlace.longitude))
+                MainActivity.database.placeDao().insertPlace(Place(placeName = newPlace.placeName, creationDate = newPlace.creationDate, latitude = newPlace.latitude, longitude = newPlace.longitude))
 
             }
         }

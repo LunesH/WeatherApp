@@ -68,11 +68,23 @@ fun WeatherApp() {
     val locationViewmodel = LocationViewmodel()
 
 
-
+    //load places from db
     LaunchedEffect(key1 = true){
         CoroutineScope(Dispatchers.IO).launch {
             var storedPlaces = MainActivity.database.placeDao().getAllPlaces()
             placeViewmodel.placesList+=storedPlaces
+        }
+    }
+
+    //load location from db
+    LaunchedEffect(key1 = true){
+        CoroutineScope(Dispatchers.IO).launch {
+            var storedLocation = MainActivity.database.placeDao().getAllLocations()
+            if (storedLocation.isNotEmpty()){
+                var location = storedLocation.get(0)
+                var storedLocationAsPlace = Place(location.id,location.placeName,location.creationDate,location.latitude,location.longitude)
+                locationViewmodel.userLocation.value=storedLocationAsPlace
+            }
         }
     }
 

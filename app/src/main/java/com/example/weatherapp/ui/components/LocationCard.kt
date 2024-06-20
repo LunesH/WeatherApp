@@ -36,13 +36,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
+import com.example.weatherapp.MainActivity
+import com.example.weatherapp.model.LocationEntity
 import com.example.weatherapp.model.Place
 import com.example.weatherapp.ui.screens.Screen
 import com.example.weatherapp.viewmodel.LocationViewmodel
 import com.example.weatherapp.viewmodel.PlaceViewmodel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -63,6 +67,20 @@ fun LocationCard(
         if (userLocation != Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0)) {
             withContext(Dispatchers.IO) {
                 locationViewmodel.getPlaceName(locationViewmodel.userLocation.value)
+                var location = locationViewmodel.userLocation.value
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        if (MainActivity.database.placeDao().getAllLocations().isEmpty()){
+                            Log.e("inserted",location.toString())
+                            MainActivity.database.placeDao().insertLocation(LocationEntity(0,location.placeName,location.creationDate,location.latitude,location.longitude))
+                        }else{
+                            MainActivity.database.placeDao().updateLocation(LocationEntity(0,location.placeName,location.creationDate,location.latitude,location.longitude))
+                            Log.e("updated",location.toString())
+                        }
+                    } catch (e: Exception) {
+                        Log.e("Exception", "Error deleting place: ${e.message}", e)
+                    }
+                }
             }
         }
 

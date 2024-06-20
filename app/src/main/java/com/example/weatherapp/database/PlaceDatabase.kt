@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.weatherapp.model.LocationEntity
 import com.example.weatherapp.model.Place
 
-@Database(entities = [Place::class], version = 4)
+@Database(entities = [Place::class,LocationEntity::class], version = 6)
 abstract class PlaceDatabase : RoomDatabase() {
     abstract fun placeDao(): PlaceDao
 }
