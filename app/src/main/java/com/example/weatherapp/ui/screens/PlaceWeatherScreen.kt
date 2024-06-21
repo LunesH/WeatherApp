@@ -1,7 +1,10 @@
 package com.example.weatherapp.ui.screens
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -22,27 +25,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.weatherapp.R
+import com.example.weatherapp.model.DailyWeatherData
 import com.example.weatherapp.model.HourlyWeatherData
 import com.example.weatherapp.ui.components.BackButton
 import com.example.weatherapp.ui.components.DailyValuesCard
+import com.example.weatherapp.ui.components.HourlyValuesCard
 import com.example.weatherapp.ui.components.WeatherInfoImage
 import com.example.weatherapp.ui.components.WeatherInfoTexts
-import com.example.weatherapp.util.IconMapper
 import com.example.weatherapp.viewmodel.PlaceViewmodel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaceWeatherScreen(navController: NavHostController,placeViewModel: PlaceViewmodel , weatherViewModel: WeatherViewModel = viewModel(), ) {
-    //Todo: bei den Temperaturen runden, sodass keine Kommastellen angezeigt werden , außerdem ° ergänzen
     val selectedPlace by placeViewModel.selectedPlace.observeAsState()
     val cityText = selectedPlace?.placeName ?: "No Place Selected"
     val weatherResource: Resource<WeatherData>? by weatherViewModel.weatherResource.observeAsState()
     val hourlyWeatherResource: Resource<HourlyWeatherData>? by weatherViewModel.hourlyWeatherResource.observeAsState()
+    val dailyWeatherResource:Resource<DailyWeatherData>? by weatherViewModel.dailyWeatherResource.observeAsState()
     LaunchedEffect(selectedPlace) {
         selectedPlace?.let {
             weatherViewModel.getWeatherData(it.placeName)
             weatherViewModel.getHourlyWeatherData(it.placeName)
+            weatherViewModel.getDailyWeatherData(it.placeName)
         }
     }
     Scaffold(
@@ -69,9 +74,11 @@ fun PlaceWeatherScreen(navController: NavHostController,placeViewModel: PlaceVie
         content = { innerPadding ->
             Modifier.padding(innerPadding)
             weatherResource?.let { hourlyWeatherResource?.let { it1 ->
-                PlaceWeatherScreenContent(cityText, it,
-                    it1
-                )
+                dailyWeatherResource?.let { it2 ->
+                    PlaceWeatherScreenContent(cityText, it,
+                        it1, it2
+                    )
+                }
             } }
         }
     )
@@ -80,15 +87,19 @@ fun PlaceWeatherScreen(navController: NavHostController,placeViewModel: PlaceVie
     fun PlaceWeatherScreenContent(
         cityText: String,
         weatherResource: Resource<WeatherData>,
-        hourlyWeatherResource: Resource<HourlyWeatherData>
+        hourlyWeatherResource: Resource<HourlyWeatherData>,
+        dailyWeatherResource: Resource<DailyWeatherData>
     ){
         Column(
             modifier = Modifier
                 .padding(top = 80.dp, start = 16.dp, end = 16.dp)
+                .verticalScroll(ScrollState(0),true)
+                .size(800.dp)
         ) {
             WeatherInfoTexts(cityText, weatherResource)
             WeatherInfoImage(weatherResource)
-            DailyValuesCard(hourlyWeatherResource)
+            HourlyValuesCard(hourlyWeatherResource)
+            DailyValuesCard( dailyWeatherResource)
         }
     }
 

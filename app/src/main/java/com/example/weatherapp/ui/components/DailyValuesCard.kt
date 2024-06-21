@@ -2,38 +2,43 @@ package com.example.weatherapp.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.weatherapp.data.api.util.Resource
-import com.example.weatherapp.model.DataOfSpecificHour
-import com.example.weatherapp.model.HourlyWeatherData
+import com.example.weatherapp.model.DailyWeatherData
+import com.example.weatherapp.model.DataOfSpecificDay
+import com.example.weatherapp.model.Temperature
 import com.example.weatherapp.util.IconMapper
+import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Calendar
-import java.util.Date
+import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
-fun DailyValuesCard(hourlyWeatherResource: Resource<HourlyWeatherData>) {
-    val hasFinishedLoading= when(hourlyWeatherResource){
+fun DailyValuesCard(dailyWeatherResource: Resource<DailyWeatherData>) {
+    val hasFinishedLoading= when(dailyWeatherResource){
         is Resource.Success -> true
         else -> false
     }
-    val dataList:List<DataOfSpecificHour> = when (hourlyWeatherResource) {
-        is Resource.Success -> hourlyWeatherResource.data?.listOfDataPerHour!!
+    val dataList:List<DataOfSpecificDay> = when (dailyWeatherResource) {
+        is Resource.Success -> dailyWeatherResource.data?.list!!
         is Resource.Loading -> listOf()
         else -> listOf()
     }
@@ -44,15 +49,17 @@ fun DailyValuesCard(hourlyWeatherResource: Resource<HourlyWeatherData>) {
         modifier = Modifier.padding(horizontal = 22.dp, vertical = 12.dp),
         shape = RoundedCornerShape(22.dp),
     ) {
-        LazyRow(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp, bottom = 16.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
+                .padding(vertical = 16.dp, horizontal=22.dp)
         ) {
             if(hasFinishedLoading) {
                 items(dataList) {  data->
-                    HourlyForecast(data.time, data.weather[0].icon, data.weatherNumbers.temperature)
+                    DailyForecast(data.timeOfForecast, data.weather[0].icon, data.temperature)
+                    Divider(modifier = Modifier
+                        .padding(vertical = 4.dp),
+                        thickness = 2.dp,)
                 }
             }
         }
@@ -60,23 +67,24 @@ fun DailyValuesCard(hourlyWeatherResource: Resource<HourlyWeatherData>) {
 }
 
 @Composable
-fun HourlyForecast(time: String, iconID: String, temperature: Double) {
+fun DailyForecast(time: Int, iconID: String, temperature: Temperature) {
     val iconMapper = IconMapper();
-    val pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    var localDateTime = LocalDateTime.parse(time, pattern)
-    localDateTime=localDateTime.withMinute(0)
-    val hour =localDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-
-
-    Column (modifier = Modifier.width(80.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = hour)
+    val instant = java.time.Instant.ofEpochSecond(time.toLong())
+    val date = LocalDateTime.ofInstant(instant, java.time.ZoneId.systemDefault())
+    val currentDate = LocalDate.now(java.time.ZoneId.systemDefault())
+    val dayOfWeek = if (date.toLocalDate().isEqual(currentDate)) {
+        "Today"
+    } else {
+        date.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.UK)
+    }
+    Row (modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+        Text(text= dayOfWeek, fontWeight=FontWeight.Bold, modifier = Modifier.width(90.dp))
         Image(
             painter = iconMapper.getIconResource(iconId = iconID),
             contentDescription = "weatherIcon",
             modifier = Modifier.width(30.dp))
-        Text(text = temperature.toString())
+        Text(text = temperature.tempMin.toInt().toString()+"°" +"- "+ temperature.tempMax.toInt().toString()+"°", modifier = Modifier.width(80.dp), fontWeight = FontWeight.Bold)
     }
 }
-
-
-

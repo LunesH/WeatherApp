@@ -17,7 +17,7 @@ import com.example.weatherapp.data.model.WeatherData
 @Composable
 fun WeatherInfoTexts(cityText: String, weatherResource: Resource<WeatherData>){
     val temperatureText = when (weatherResource) {
-        is Resource.Success -> weatherResource.data?.weatherNumbers?.temperature
+        is Resource.Success -> weatherResource.data?.weatherNumbers?.temperature?.toInt()
         is Resource.Loading -> "Loading..."
         else -> "No info"
     }
@@ -27,12 +27,12 @@ fun WeatherInfoTexts(cityText: String, weatherResource: Resource<WeatherData>){
         else -> "No info"
     }
     val tempMin = when (weatherResource) {
-        is Resource.Success -> weatherResource.data?.weatherNumbers?.tempMin
-        is Resource.Loading -> "Loading..."
-        else -> "No info"
+        is Resource.Success -> weatherResource.data?.weatherNumbers?.tempMin?.toInt()
+        is Resource.Loading -> "..."
+        else -> "..."
     }
     val tempMax = when (weatherResource) {
-        is Resource.Success -> weatherResource.data?.weatherNumbers?.tempMax
+        is Resource.Success -> weatherResource.data?.weatherNumbers?.tempMax?.toInt()
         is Resource.Loading -> "Loading..."
         else -> "No info"
     }
@@ -44,23 +44,23 @@ fun WeatherInfoTexts(cityText: String, weatherResource: Resource<WeatherData>){
         modifier = Modifier
             .padding( horizontal = 16.dp)
     )
-    Row(verticalAlignment = Alignment.Bottom) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
-            text = temperatureText.toString(),
+            text = temperatureText.toString()+"°",
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier
-                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .padding(horizontal = 16.dp)
         )
         Text(
             text = weatherDescriptionText.toString(),
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier
-                .padding(vertical = 8.dp)
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleMedium
         )
     }
     Text(
-        text = tempMin.toString() +"-"+ tempMax.toString(),
+        text = tempMin.toString()+"°" +"- "+ tempMax.toString()+"°",
+        fontWeight = FontWeight.Bold,
         textAlign = TextAlign.Center,
         style = MaterialTheme.typography.bodyLarge,
         modifier = Modifier
