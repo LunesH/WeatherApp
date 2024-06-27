@@ -170,7 +170,7 @@ fun LocationCard(
                 modifier = Modifier
                     .padding(end = 22.dp)
                     .clickable {
-                        getLastKnownLocation(context) { place ->
+                        getNewLocationData(context) { place ->
                             userLocation = place
                             Log.e("res",place.toString())
                             locationViewmodel.userLocation.value = Place(placeName = "Get Location", creationDate = "Now", latitude = place.latitude, longitude = place.longitude)
@@ -185,37 +185,8 @@ fun LocationCard(
 
 }
 
-fun getLastKnownLocation(context: Context, onLocationResult: (Place) -> Unit) {
-    val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
-    if (ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED ||
-        ActivityCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-    ) {
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null) {
-                val locationString = "Latitude: ${location.latitude}, Longitude: ${location.longitude}"
-                Log.e("Location", locationString)
-                onLocationResult(Place(placeName = "-", creationDate = "-", latitude = location.latitude, longitude = location.longitude))
-            } else {
-                //get new location data
-                requestNewLocationData(context, onLocationResult)
-            }
-        }.addOnFailureListener { exception ->
-            Log.e("Exception", "${exception.message}")
-            onLocationResult(Place(placeName = "Location failed", creationDate = "-", latitude = 0.0, longitude = 0.0))
-        }
-    } else {
-        onLocationResult(Place(placeName = "No Permission", creationDate = "-", latitude = 0.0, longitude = 0.0))
-    }
-}
-
-private fun requestNewLocationData(context: Context, onLocationResult: (Place) -> Unit) {
+private fun getNewLocationData(context: Context, onLocationResult: (Place) -> Unit) {
     val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     val locationRequest = LocationRequest.create().apply {
         interval = 10000 // 10 seconds

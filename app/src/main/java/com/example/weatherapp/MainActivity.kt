@@ -1,8 +1,6 @@
 package com.example.weatherapp
 
-import android.app.Application
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,12 +16,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import com.example.weatherapp.data.model.Weather
 import com.example.weatherapp.database.PlaceDatabase
 import com.example.weatherapp.model.Place
 import com.example.weatherapp.ui.screens.AddPlaceScreen
 import com.example.weatherapp.ui.screens.PlaceWeatherScreen
 import com.example.weatherapp.ui.screens.Screen
+import com.example.weatherapp.ui.screens.WeatherMapScreen
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import com.example.weatherapp.viewmodel.LocationViewmodel
 import com.example.weatherapp.viewmodel.PlaceViewmodel
@@ -110,12 +108,16 @@ fun WeatherNavHost(
     NavHost(
         navController = navController,
         startDestination = Screen.AddPlaceScreen.route,
+        //startDestination = Screen.WeatherMapScreen.route,
         ){
         composable(route = Screen.AddPlaceScreen.route){
             AddPlaceScreen(navController,placeViewmodel,locationViewmodel)
         }
         composable(route = Screen.PlaceWeatherScreen.route){
             PlaceWeatherScreen(navController, placeViewmodel)
+        }
+        composable(route = Screen.WeatherMapScreen.route){
+            WeatherMapScreen(navController, placeViewmodel)
         }
     }
 }
