@@ -241,7 +241,7 @@ fun SearchBar(placeViewmodel: PlaceViewmodel, onSearch: (String) -> Unit) {
                                                 context,
                                                 "Place " + place.placeName + " already added!",
                                                 Toast.LENGTH_SHORT
-                                            ) // in Activity
+                                            )
                                             toast.show()
 
                                             return@clickable

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
@@ -219,6 +220,12 @@ private fun getNewLocationData(context: Context, onLocationResult: (Place) -> Un
         }, Looper.getMainLooper())
     } else {
         Log.e("LocationError", "No location permission")
+        val toast = Toast.makeText(
+            context,
+            "Activate location permission in the settings!",
+            Toast.LENGTH_SHORT
+        )
+        toast.show()
         onLocationResult(Place(placeName = "No Permission", creationDate = "-", latitude = 0.0, longitude = 0.0))
     }
 }
