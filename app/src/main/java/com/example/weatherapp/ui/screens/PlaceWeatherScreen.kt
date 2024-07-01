@@ -1,9 +1,14 @@
 package com.example.weatherapp.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -29,6 +34,7 @@ import com.example.weatherapp.model.DailyWeatherData
 import com.example.weatherapp.model.HourlyWeatherData
 import com.example.weatherapp.ui.components.BackButton
 import com.example.weatherapp.ui.components.DailyValuesCard
+import com.example.weatherapp.ui.components.ExtraWeatherInfo
 import com.example.weatherapp.ui.components.HourlyValuesCard
 import com.example.weatherapp.ui.components.WeatherInfoImage
 import com.example.weatherapp.ui.components.WeatherInfoTexts
@@ -90,16 +96,17 @@ fun PlaceWeatherScreen(navController: NavHostController,placeViewModel: PlaceVie
         hourlyWeatherResource: Resource<HourlyWeatherData>,
         dailyWeatherResource: Resource<DailyWeatherData>
     ){
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(top = 80.dp, start = 16.dp, end = 16.dp)
-                .verticalScroll(ScrollState(0),true)
                 .size(800.dp)
         ) {
-            WeatherInfoTexts(cityText, weatherResource)
-            WeatherInfoImage(weatherResource)
-            HourlyValuesCard(hourlyWeatherResource)
-            DailyValuesCard( dailyWeatherResource)
+            item {WeatherInfoTexts(cityText, weatherResource) }
+            item {WeatherInfoImage(weatherResource) }
+            item {HourlyValuesCard(hourlyWeatherResource) }
+            item {DailyValuesCard( dailyWeatherResource) }
+            item {ExtraWeatherInfo(weatherResource) }
+            item { Spacer(modifier = Modifier.height(8.dp)) }
         }
     }
 

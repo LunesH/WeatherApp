@@ -2,6 +2,7 @@ package com.example.weatherapp.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,13 +50,13 @@ fun DailyValuesCard(dailyWeatherResource: Resource<DailyWeatherData>) {
         modifier = Modifier.padding(horizontal = 22.dp, vertical = 12.dp),
         shape = RoundedCornerShape(22.dp),
     ) {
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp, horizontal=22.dp)
         ) {
             if(hasFinishedLoading) {
-                items(dataList) {  data->
+                dataList.forEach { data ->
                     DailyForecast(data.timeOfForecast, data.weather[0].icon, data.temperature)
                     Divider(modifier = Modifier
                         .padding(vertical = 4.dp),
