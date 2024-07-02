@@ -1,10 +1,10 @@
-package com.example.weatherapp.repository
+package com.example.weatherapp.data.repository
 
 import android.util.Log
-import com.example.weatherapp.model.AutocompletionPlace
-import com.example.weatherapp.model.GeoCodingResponse
-import com.example.weatherapp.model.Place
-import com.example.weatherapp.model.PlaceHolder
+import com.example.weatherapp.data.model.AutocompletionPlace
+import com.example.weatherapp.data.model.GeoCodingResponse
+import com.example.weatherapp.data.model.Place
+import com.example.weatherapp.data.model.PlaceHolder
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser

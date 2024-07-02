@@ -1,9 +1,4 @@
-package com.example.weatherapp.model
-
-import com.example.weatherapp.data.model.Clouds
-import com.example.weatherapp.data.model.MainInfo
-import com.example.weatherapp.data.model.Weather
-import com.example.weatherapp.data.model.Wind
+package com.example.weatherapp.data.model
 
 import com.google.gson.annotations.SerializedName
 

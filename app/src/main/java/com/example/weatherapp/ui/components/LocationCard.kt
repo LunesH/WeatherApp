@@ -39,11 +39,11 @@ import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
 import com.example.weatherapp.MainActivity
-import com.example.weatherapp.model.LocationEntity
-import com.example.weatherapp.model.Place
+import com.example.weatherapp.data.model.LocationEntity
+import com.example.weatherapp.data.model.Place
 import com.example.weatherapp.ui.screens.Screen
-import com.example.weatherapp.viewmodel.LocationViewmodel
-import com.example.weatherapp.viewmodel.PlaceViewmodel
+import com.example.weatherapp.ui.viewmodel.LocationViewmodel
+import com.example.weatherapp.ui.viewmodel.PlaceViewmodel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest

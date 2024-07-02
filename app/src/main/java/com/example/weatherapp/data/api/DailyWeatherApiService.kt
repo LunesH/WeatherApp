@@ -1,7 +1,6 @@
 package com.example.weatherapp.data.api
 
-import com.example.weatherapp.data.model.WeatherData
-import com.example.weatherapp.model.DailyWeatherData
+import com.example.weatherapp.data.model.DailyWeatherData
 import retrofit2.http.GET
 import retrofit2.http.Query
 

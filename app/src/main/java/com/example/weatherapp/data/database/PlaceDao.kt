@@ -1,12 +1,12 @@
-package com.example.weatherapp.database
+package com.example.weatherapp.data.database
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.example.weatherapp.model.LocationEntity
-import com.example.weatherapp.model.Place
+import com.example.weatherapp.data.model.LocationEntity
+import com.example.weatherapp.data.model.Place
 
 @Dao
 interface PlaceDao {

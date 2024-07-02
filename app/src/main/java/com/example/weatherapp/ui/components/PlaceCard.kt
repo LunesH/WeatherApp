@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.weatherapp.MainActivity
-import com.example.weatherapp.model.Place
+import com.example.weatherapp.data.model.Place
 import com.example.weatherapp.ui.screens.Screen
-import com.example.weatherapp.viewmodel.PlaceViewmodel
+import com.example.weatherapp.ui.viewmodel.PlaceViewmodel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

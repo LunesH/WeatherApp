@@ -1,15 +1,10 @@
 package com.example.weatherapp.ui.screens
 
-import android.util.Log
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -21,34 +16,34 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.weatherapp.data.api.util.Resource
+import com.example.weatherapp.util.Resource
 import com.example.weatherapp.data.model.WeatherData
-import com.example.weatherapp.viewmodel.WeatherViewModel
+import com.example.weatherapp.ui.viewmodel.WeatherViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.weatherapp.R
-import com.example.weatherapp.model.DailyWeatherData
-import com.example.weatherapp.model.HourlyWeatherData
+import com.example.weatherapp.data.model.DailyWeatherData
+import com.example.weatherapp.data.model.HourlyWeatherData
 import com.example.weatherapp.ui.components.BackButton
 import com.example.weatherapp.ui.components.DailyValuesCard
 import com.example.weatherapp.ui.components.ExtraWeatherInfo
 import com.example.weatherapp.ui.components.HourlyValuesCard
 import com.example.weatherapp.ui.components.WeatherInfoImage
 import com.example.weatherapp.ui.components.WeatherInfoTexts
-import com.example.weatherapp.viewmodel.PlaceViewmodel
+import com.example.weatherapp.ui.viewmodel.PlaceViewmodel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlaceWeatherScreen(navController: NavHostController,placeViewModel: PlaceViewmodel , weatherViewModel: WeatherViewModel = viewModel(), ) {
+fun PlaceWeatherScreen(navController: NavHostController, placeViewModel: PlaceViewmodel, weatherViewModel: WeatherViewModel = viewModel(), ) {
     val selectedPlace by placeViewModel.selectedPlace.observeAsState()
     val cityText = selectedPlace?.placeName ?: "No Place Selected"
     val weatherResource: Resource<WeatherData>? by weatherViewModel.weatherResource.observeAsState()
     val hourlyWeatherResource: Resource<HourlyWeatherData>? by weatherViewModel.hourlyWeatherResource.observeAsState()
-    val dailyWeatherResource:Resource<DailyWeatherData>? by weatherViewModel.dailyWeatherResource.observeAsState()
+    val dailyWeatherResource: Resource<DailyWeatherData>? by weatherViewModel.dailyWeatherResource.observeAsState()
     LaunchedEffect(selectedPlace) {
         selectedPlace?.let {
             weatherViewModel.getWeatherData(it.placeName)

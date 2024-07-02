@@ -1,6 +1,5 @@
-package com.example.weatherapp.model
+package com.example.weatherapp.data.model
 
-import android.text.Highlights
 import com.google.gson.annotations.SerializedName
 
 data class AutocompletionPlace (

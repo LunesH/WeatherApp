@@ -1,10 +1,10 @@
-package com.example.weatherapp.viewmodel
+package com.example.weatherapp.ui.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.example.weatherapp.model.Place
-import com.example.weatherapp.repository.PlaceRepository
+import com.example.weatherapp.data.model.Place
+import com.example.weatherapp.data.repository.PlaceRepository
 
 class LocationViewmodel : ViewModel() {
     private val placeRepository = PlaceRepository()

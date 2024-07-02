@@ -18,9 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.weatherapp.data.api.util.Resource
-import com.example.weatherapp.model.DataOfSpecificHour
-import com.example.weatherapp.model.HourlyWeatherData
+import com.example.weatherapp.util.Resource
+import com.example.weatherapp.data.model.DataOfSpecificHour
+import com.example.weatherapp.data.model.HourlyWeatherData
 import com.example.weatherapp.util.IconMapper
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

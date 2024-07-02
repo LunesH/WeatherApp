@@ -1,4 +1,4 @@
-package com.example.weatherapp.repository
+package com.example.weatherapp.data.repository
 
 import android.util.Log
 import com.example.weatherapp.data.api.DailyWeatherApi
@@ -7,10 +7,10 @@ import com.example.weatherapp.data.api.HourlyWeatherApi
 import com.example.weatherapp.data.api.HourlyWeatherApiService
 import com.example.weatherapp.data.api.WeatherApi
 import com.example.weatherapp.data.api.WeatherApiService
-import com.example.weatherapp.data.api.util.Resource
+import com.example.weatherapp.util.Resource
 import com.example.weatherapp.data.model.WeatherData
-import com.example.weatherapp.model.DailyWeatherData
-import com.example.weatherapp.model.HourlyWeatherData
+import com.example.weatherapp.data.model.DailyWeatherData
+import com.example.weatherapp.data.model.HourlyWeatherData
 import kotlinx.coroutines.withTimeout
 
 
@@ -19,7 +19,7 @@ class WeatherRepository {
     private val hourlyWeatherService: HourlyWeatherApiService = HourlyWeatherApi.hourlyWeatherClient
     private val dailyWeatherService: DailyWeatherApiService = DailyWeatherApi.dailyWeatherClient
 
-    suspend fun getDailyWeatherData(location: String, apiKey: String): Resource<DailyWeatherData>{
+    suspend fun getDailyWeatherData(location: String, apiKey: String): Resource<DailyWeatherData> {
         val response = try {
             withTimeout(60_000) {
                 dailyWeatherService.getCurrentWeatherData(location, apiKey)
@@ -43,7 +43,7 @@ class WeatherRepository {
         return Resource.Success(response)
     }
 
-    suspend fun getHourlyWeatherData(location: String, apiKey: String): Resource<HourlyWeatherData>{
+    suspend fun getHourlyWeatherData(location: String, apiKey: String): Resource<HourlyWeatherData> {
         val response = try {
             withTimeout(60_000) {
                 hourlyWeatherService.getHourlyWeatherData(location, apiKey)

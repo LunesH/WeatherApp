@@ -16,15 +16,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
-import com.example.weatherapp.database.PlaceDatabase
-import com.example.weatherapp.model.Place
+import com.example.weatherapp.data.database.PlaceDatabase
+import com.example.weatherapp.data.model.Place
 import com.example.weatherapp.ui.screens.AddPlaceScreen
 import com.example.weatherapp.ui.screens.PlaceWeatherScreen
 import com.example.weatherapp.ui.screens.Screen
-import com.example.weatherapp.ui.screens.WeatherMapScreen
 import com.example.weatherapp.ui.theme.WeatherAppTheme
-import com.example.weatherapp.viewmodel.LocationViewmodel
-import com.example.weatherapp.viewmodel.PlaceViewmodel
+import com.example.weatherapp.ui.viewmodel.LocationViewmodel
+import com.example.weatherapp.ui.viewmodel.PlaceViewmodel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -107,17 +106,13 @@ fun WeatherNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.AddPlaceScreen.route,
-        //startDestination = Screen.WeatherMapScreen.route,
+        startDestination = Screen.AddPlaceScreen.route
         ){
         composable(route = Screen.AddPlaceScreen.route){
             AddPlaceScreen(navController,placeViewmodel,locationViewmodel)
         }
         composable(route = Screen.PlaceWeatherScreen.route){
             PlaceWeatherScreen(navController, placeViewmodel)
-        }
-        composable(route = Screen.WeatherMapScreen.route){
-            WeatherMapScreen(navController, placeViewmodel)
         }
     }
 }

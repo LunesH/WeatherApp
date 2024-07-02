@@ -44,12 +44,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.weatherapp.MainActivity
-import com.example.weatherapp.model.Place
+import com.example.weatherapp.data.model.Place
 import com.example.weatherapp.ui.components.LocationCard
 import com.example.weatherapp.ui.components.PlaceCard
 import com.example.weatherapp.ui.components.TopAppTitle
-import com.example.weatherapp.viewmodel.LocationViewmodel
-import com.example.weatherapp.viewmodel.PlaceViewmodel
+import com.example.weatherapp.ui.viewmodel.LocationViewmodel
+import com.example.weatherapp.ui.viewmodel.PlaceViewmodel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime

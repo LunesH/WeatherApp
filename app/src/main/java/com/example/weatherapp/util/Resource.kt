@@ -1,4 +1,4 @@
-package com.example.weatherapp.data.api.util
+package com.example.weatherapp.util
 
 sealed class Resource<T>(
     val data: T? = null,

@@ -11,6 +11,6 @@ interface WeatherApiService {
         @Query("q") location: String?,
         @Query("appid") apiKey: String?,
         @Query("units") unit: String="metric"
-    ):WeatherData
+    ): WeatherData
 
 }
