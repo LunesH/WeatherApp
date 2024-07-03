@@ -2,6 +2,9 @@ package com.example.weatherapp.data.model
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Data class for response of autocompletion api.
+ * */
 data class AutocompletionPlace (
     @SerializedName("title") var title: String,
     @SerializedName("id") var id : String,

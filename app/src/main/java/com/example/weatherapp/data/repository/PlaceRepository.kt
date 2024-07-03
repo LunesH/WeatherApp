@@ -20,9 +20,15 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+/**
+ * Repository that retrieves place data like place name, place autocompletion and place coordinates
+ * */
 class PlaceRepository {
     val apiKey = "CAIdlznnUt41C80geKnq5GMQOXChOPHXe5x1vfY8NX0";
 
+    /**
+     * Returns autocompletion of given input string using hereapi
+     * */
     suspend fun getAutocompletion(input: String): List<String> {
         var placeList = listOf<String>()
         withContext(Dispatchers.IO) {
@@ -57,7 +63,10 @@ class PlaceRepository {
     }
 
 
-    //Geocoding APi
+    /**
+     * Returns coordinates in place instance of given place name of other place instance
+     * using openweathermap geoCodingApi
+     * */
     suspend fun getCoordinates(place: Place): Place {
         var geocodingApiKey = "efd4eb38672f855233e1f31b9c6c4d54"
         var newPlace = place
@@ -98,7 +107,10 @@ class PlaceRepository {
     }
 
 
-    //reverse Geocoding APi
+    /**
+     * Returns the place name in a place instance of the coordinates of a
+     * given other place instance using reverse geoCodingApi of openweathermap.
+     * */
     suspend fun getPlaceName(place: Place): Place {
         var geocodingApiKey = "efd4eb38672f855233e1f31b9c6c4d54"
         var newPlace = place

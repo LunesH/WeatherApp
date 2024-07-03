@@ -2,6 +2,9 @@ package com.example.weatherapp.data.model
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Data classes for response of geoCoding api.
+ * */
 data class GeoCodingResponse(
     @SerializedName("name") var name: String,
     @SerializedName("local_names") var localNames: LocalNames,

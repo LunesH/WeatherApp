@@ -8,6 +8,9 @@ import androidx.room.Update
 import com.example.weatherapp.data.model.LocationEntity
 import com.example.weatherapp.data.model.Place
 
+/**
+ * interface for the local db of location and places.
+ * */
 @Dao
 interface PlaceDao {
 

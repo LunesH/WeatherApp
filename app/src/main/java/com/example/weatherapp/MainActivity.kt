@@ -36,14 +36,14 @@ class MainActivity : ComponentActivity() {
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //initialising local database
         database = Room.databaseBuilder(
             applicationContext,
             PlaceDatabase::class.java,
             "place_database"
         ).fallbackToDestructiveMigration()
             .build()
-
-
 
         setContent {
             WeatherAppTheme {
@@ -85,13 +85,6 @@ fun WeatherApp() {
         }
     }
 
-    LaunchedEffect(true) {
-        withContext(Dispatchers.IO) {
-            placeViewmodel.placesList.forEach{place ->
-                placeViewmodel.updatePlaceCoordinates(place)
-            }
-        }
-    }
     Scaffold { innerPadding ->
         WeatherNavHost(navController, Modifier.padding(innerPadding), placeViewmodel,locationViewmodel)
     }

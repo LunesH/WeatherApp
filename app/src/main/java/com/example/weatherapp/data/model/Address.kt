@@ -2,6 +2,10 @@ package com.example.weatherapp.data.model
 
 import com.google.gson.annotations.SerializedName
 
+
+/**
+ * Address data class for autocompletion.
+ * */
 data class Address(
     @SerializedName("label") var label: String,
     @SerializedName("countryCode") var countryCode: String,
