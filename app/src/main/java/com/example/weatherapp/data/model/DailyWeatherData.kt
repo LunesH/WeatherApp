@@ -2,6 +2,9 @@ package com.example.weatherapp.data.model
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * Data classes to hold the daily weather data from the OpenWeatherMapApi
+ * */
 data class DailyWeatherData(
     @SerializedName("city") val city: City,
     @SerializedName("list") val list: List<DataOfSpecificDay>

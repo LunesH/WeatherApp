@@ -12,6 +12,9 @@ import com.example.weatherapp.util.Resource
 import com.example.weatherapp.data.model.WeatherData
 import com.example.weatherapp.util.IconMapper
 
+/**
+ * This is for the large weather icon on the PlaceWeatherScreen.
+ * */
 @Composable
 fun WeatherInfoImage(weatherResource: Resource<WeatherData>){
     val iconMapper = IconMapper();

@@ -16,6 +16,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.weatherapp.R
 
+/**
+ * The title of the app is displayed at the top as well as an icon image.
+ * */
 @Composable
 fun TopAppTitle(){
     Row(modifier = Modifier.fillMaxWidth() .padding(start= 31.dp, end = 32.dp),

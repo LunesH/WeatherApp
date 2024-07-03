@@ -11,6 +11,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
+/**
+ * Navigates back to the previous screen*/
 @Composable
 fun BackButton(navController: NavController) {
     IconButton(

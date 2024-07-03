@@ -13,6 +13,10 @@ import androidx.compose.ui.unit.dp
 import com.example.weatherapp.util.Resource
 import com.example.weatherapp.data.model.WeatherData
 
+/**
+ * This is for displaying the temperature, weather description, min temperature and max temperature
+ * on the PlaceWeatherScreen.
+ * */
 @Composable
 fun WeatherInfoTexts(cityText: String, weatherResource: Resource<WeatherData>){
     val temperatureText = when (weatherResource) {

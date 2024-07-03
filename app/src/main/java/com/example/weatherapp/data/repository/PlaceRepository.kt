@@ -28,7 +28,7 @@ class PlaceRepository {
         withContext(Dispatchers.IO) {
             val client = OkHttpClient()
             val request = Request.Builder()
-                .url("https://autocomplete.search.hereapi.com/v1/autocomplete?q="+input+"&apiKey="+apiKey)
+                .url("https://autocomplete.search.hereapi.com/v1/autocomplete?q=" + input + "&apiKey=" + apiKey)
                 .get()
                 .build()
 
@@ -43,66 +43,70 @@ class PlaceRepository {
 
                     val places = gson.fromJson(jsonObject, PlaceHolder::class.java)
 
-                    for (place in places.items){
-                        if (!placeList.contains(place.address.city)&&place.address.city!=null){
+                    for (place in places.items) {
+                        if (!placeList.contains(place.address.city) && place.address.city != null) {
                             placeList += place.address.city
                         }
                     }
-                }catch(e:Exception){
-                    Log.e("exception",e.message.toString())
+                } catch (e: Exception) {
+                    Log.e("exception", e.message.toString())
                 }
             }
         }
-           return placeList
+        return placeList
     }
 
 
+    //Geocoding APi
+    suspend fun getCoordinates(place: Place): Place {
+        var geocodingApiKey = "efd4eb38672f855233e1f31b9c6c4d54"
+        var newPlace = place
+        withContext(Dispatchers.IO) {
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url("http://api.openweathermap.org/geo/1.0/direct?q=" + place.placeName + "&limit=1&appid=" + geocodingApiKey)
+                .get()
+                .build()
 
-        //Geocoding APi
-        suspend fun getCoordinates(place: Place): Place {
-            var geocodingApiKey = "efd4eb38672f855233e1f31b9c6c4d54"
-            var newPlace = place
-            withContext(Dispatchers.IO) {
-                val client = OkHttpClient()
-                val request = Request.Builder()
-                    .url("http://api.openweathermap.org/geo/1.0/direct?q="+place.placeName+"&limit=1&appid="+geocodingApiKey)
-                    .get()
-                    .build()
+            var response = client.newCall(request).execute();
+            val responseBody = response.body
 
-                var response = client.newCall(request).execute();
-                val responseBody = response.body
+            if (response.isSuccessful && responseBody != null) {
+                val bodyString = responseBody.string()
+                try {
+                    val jsonArray = JsonParser.parseString(bodyString).asJsonArray
+                    val jsonObject = jsonArray.get(0).asJsonObject
+                    val gson = Gson()
 
-                if (response.isSuccessful && responseBody != null) {
-                    val bodyString = responseBody.string()
-                    try {
-                        val jsonArray = JsonParser.parseString(bodyString).asJsonArray
-                        val jsonObject = jsonArray.get(0).asJsonObject
-                        val gson = Gson()
+                    val geoCodingResponse = gson.fromJson(jsonObject, GeoCodingResponse::class.java)
+                    newPlace = Place(
+                        placeName = place.placeName,
+                        creationDate = place.creationDate,
+                        latitude = geoCodingResponse.lat,
+                        longitude = geoCodingResponse.lon
+                    )
 
-                        val geoCodingResponse = gson.fromJson(jsonObject, GeoCodingResponse::class.java)
-                        newPlace = Place(placeName = place.placeName, creationDate = place.creationDate, latitude = geoCodingResponse.lat, longitude = geoCodingResponse.lon)
-
-                    }catch(e:Exception){
-                        Log.e("exception",e.message.toString())
-                    }
+                } catch (e: Exception) {
+                    Log.e("exception", e.message.toString())
                 }
             }
-
-            return newPlace;
-
-
         }
+
+        return newPlace;
+
+
+    }
 
 
     //reverse Geocoding APi
     suspend fun getPlaceName(place: Place): Place {
         var geocodingApiKey = "efd4eb38672f855233e1f31b9c6c4d54"
         var newPlace = place
-        Log.e("place",place.toString())
+        Log.e("place", place.toString())
         withContext(Dispatchers.IO) {
             val client = OkHttpClient()
             val request = Request.Builder()
-                .url("http://api.openweathermap.org/geo/1.0/reverse?lat="+place.latitude+"&lon="+place.longitude+"&limit=5&appid="+geocodingApiKey)
+                .url("http://api.openweathermap.org/geo/1.0/reverse?lat=" + place.latitude + "&lon=" + place.longitude + "&limit=5&appid=" + geocodingApiKey)
                 .get()
                 .build()
 
@@ -123,11 +127,16 @@ class PlaceRepository {
                     val gson = Gson()
 
                     val geoCodingResponse = gson.fromJson(jsonObject, GeoCodingResponse::class.java)
-                    newPlace = Place(placeName = geoCodingResponse.name, creationDate = date, latitude = geoCodingResponse.lat, longitude = geoCodingResponse.lon)
+                    newPlace = Place(
+                        placeName = geoCodingResponse.name,
+                        creationDate = date,
+                        latitude = geoCodingResponse.lat,
+                        longitude = geoCodingResponse.lon
+                    )
 
-                    Log.e("response",newPlace.toString())
-                }catch(e:Exception){
-                    Log.e("exception",e.message.toString())
+                    Log.e("response", newPlace.toString())
+                } catch (e: Exception) {
+                    Log.e("exception", e.message.toString())
                 }
             }
         }
@@ -136,4 +145,4 @@ class PlaceRepository {
 
 
     }
-    }
+}
