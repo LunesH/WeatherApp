@@ -54,6 +54,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Card containing the location and the time the location
+ * was last updated.
+ */
 @Composable
 fun LocationCard(
     place: Place,
@@ -65,22 +69,27 @@ fun LocationCard(
     val context = LocalContext.current
     var userLocation by remember { mutableStateOf(Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0)) }
     var locationPermission by remember { mutableStateOf(false) }
+
     var getLocationPlaceName by remember {
        mutableStateOf(false)
     }
+
+    //The LaunchedEffect is triggered if getLocationPlaceName is changed to get new place Name and save it to Roomdb
     LaunchedEffect(getLocationPlaceName) {
+        //check if userLocation is Init state
         if (userLocation != Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0)) {
             withContext(Dispatchers.IO) {
                 locationViewmodel.getPlaceName(locationViewmodel.userLocation.value)
                 var location = locationViewmodel.userLocation.value
+                //update Roomdb in coroutine
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         if (MainActivity.database.placeDao().getAllLocations().isEmpty()){
-                            Log.e("inserted",location.toString())
+                            //insert in RoomDb
                             MainActivity.database.placeDao().insertLocation(LocationEntity(0,location.placeName,location.creationDate,location.latitude,location.longitude))
                         }else{
+                            //update in RoomDb
                             MainActivity.database.placeDao().updateLocation(LocationEntity(0,location.placeName,location.creationDate,location.latitude,location.longitude))
-                            Log.e("updated",location.toString())
                         }
                     } catch (e: Exception) {
                         Log.e("Exception", "Error deleting place: ${e.message}", e)
@@ -91,11 +100,12 @@ fun LocationCard(
 
     }
 
+    //ask for location permission
     val locationPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ){}
 
-    //check for permission and get permission
+    //check for permission and get permission after first launch
     LaunchedEffect(Unit) {
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -112,6 +122,7 @@ fun LocationCard(
         }
     }
 
+    //Location card UI
     Card(
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFE4E4E4),
@@ -186,7 +197,9 @@ fun LocationCard(
 
 }
 
-
+/**
+ * Callback funtion to get the users location data.
+ * */
 private fun getNewLocationData(context: Context, onLocationResult: (Place) -> Unit) {
     val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     val locationRequest = LocationRequest.create().apply {
@@ -194,7 +207,7 @@ private fun getNewLocationData(context: Context, onLocationResult: (Place) -> Un
         fastestInterval = 5000 // 5 seconds
         priority = LocationRequest.PRIORITY_HIGH_ACCURACY
     }
-
+    //check for permission
     if (ActivityCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -208,18 +221,17 @@ private fun getNewLocationData(context: Context, onLocationResult: (Place) -> Un
             override fun onLocationResult(locationResult: LocationResult) {
                 fusedLocationClient.removeLocationUpdates(this)
                 if (locationResult != null && locationResult.locations.isNotEmpty()) {
+                    //getLocation successful
                     val location = locationResult.locations[0]
-                    val locationString = "Latitude: ${location.latitude}, Longitude: ${location.longitude}"
-                    Log.e("Location", locationString)
                     onLocationResult(Place(placeName = "-", creationDate = "-", latitude = location.latitude, longitude = location.longitude))
                 } else {
-                    Log.e("LocationError", "New location is null")
+                    //error while getting location
                     onLocationResult(Place(placeName = "No Location", creationDate = "-", latitude = 0.0, longitude = 0.0))
                 }
             }
         }, Looper.getMainLooper())
     } else {
-        Log.e("LocationError", "No location permission")
+        //no location permission
         val toast = Toast.makeText(
             context,
             "Activate location permission in the settings!",

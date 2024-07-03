@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -50,12 +51,15 @@ import com.example.weatherapp.ui.components.PlaceCard
 import com.example.weatherapp.ui.components.TopAppTitle
 import com.example.weatherapp.ui.viewmodel.LocationViewmodel
 import com.example.weatherapp.ui.viewmodel.PlaceViewmodel
+import com.example.weatherapp.ui.components.SearchBar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-
+/**
+ * This is the screen where the user adds places and can access the weather of the added places.
+ * */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddPlaceScreen(
@@ -83,7 +87,7 @@ fun AddPlaceScreen(
                     .background(Color(0xffD2D2D2))
                     .padding(innerPadding)
             ) {
-                Spacer(modifier = Modifier.height(88.dp))
+                Spacer(modifier = Modifier.height(64.dp))
                 SearchBar(placeViewmodel) { query ->
                     searchQuery = query
                     searchResult = "Search query: $query"
@@ -98,6 +102,7 @@ fun AddPlaceScreen(
                     color = Color(0xFFE4E4E4)
                 )
                 if (placeViewmodel.placesList.isEmpty()){
+                    //Placeholder if no place is added
                     Text(
                         text = "Add a place to see the local weather" ,
                         textAlign = TextAlign.Center,
@@ -108,6 +113,7 @@ fun AddPlaceScreen(
                             .padding(top = 32.dp)
                     )
                 }else{
+                    //list of added places
                     LazyColumn (modifier = Modifier.fillMaxHeight()){
                         placeViewmodel.placesList.forEach { place ->
                             item {
@@ -126,143 +132,5 @@ fun AddPlaceScreen(
             }
         }
     )
-}
-
-
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SearchBar(placeViewmodel: PlaceViewmodel, onSearch: (String) -> Unit) {
-
-    var context = LocalContext.current
-
-
-    var searchQuery by remember { mutableStateOf("") }
-    var addedPlace by remember {
-        mutableStateOf(Place(placeName = "", creationDate = "-", latitude = 0.0, longitude = 0.0))
-    }
-    LaunchedEffect(addedPlace) {
-        if (addedPlace != Place(placeName = "", creationDate = "-", latitude = 0.0, longitude = 0.0)) {
-            withContext(Dispatchers.IO) {
-                var newPlace = addedPlace
-                placeViewmodel.updatePlaceCoordinates(addedPlace)
-
-                val index = placeViewmodel.placesList.indexOfFirst { newPlace.placeName == it.placeName }
-                newPlace = placeViewmodel.placesList[index]
-                MainActivity.database.placeDao().insertPlace(Place(placeName = newPlace.placeName, creationDate = newPlace.creationDate, latitude = newPlace.latitude, longitude = newPlace.longitude))
-
-            }
-        }
-
-    }
-    LaunchedEffect(searchQuery) {
-        withContext(Dispatchers.IO) {
-            placeViewmodel.updateAutomcompletePlaceList(searchQuery)
-        }
-    }
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .background(Color(0xFFE4E4E4), shape = RoundedCornerShape(32.dp)),
-
-
-        ) {
-        Column {
-            TextField(
-                value = searchQuery,
-                onValueChange = {
-                    searchQuery = it
-                    onSearch(it)
-                },
-                placeholder = {
-                    Text("Add a place")
-                },
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = Color.Black,
-                ),
-                modifier = Modifier
-                    .fillMaxWidth(),
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search
-                ),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        onSearch.invoke(searchQuery)
-                    }
-                ),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .padding(start = 8.dp)
-                    )
-                },
-                textStyle = LocalTextStyle.current.copy(color = Color.Black)
-            )
-
-            if (placeViewmodel.placeAutocompletionList.isNotEmpty()) {
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 16.dp)
-                ) {
-                    placeViewmodel.placeAutocompletionList.forEach { placename ->
-                        Divider(
-                            modifier = Modifier
-                                .padding(vertical = 8.dp)
-                                .padding(bottom = 16.dp),
-                            thickness = 2.dp,
-                            color = Color.LightGray,
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    val formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
-                                    val date = LocalDateTime
-                                        .now()
-                                        .format(formatter)
-                                    var place = Place(
-                                        placeName = placename,
-                                        creationDate = date,
-                                        latitude = 0.0,
-                                        longitude = 0.0
-                                    )
-                                    placeViewmodel.placesList.forEach { it ->
-                                        if (it.placeName.equals(place.placeName)) {
-                                            val toast = Toast.makeText(
-                                                context,
-                                                "Place " + place.placeName + " already added!",
-                                                Toast.LENGTH_SHORT
-                                            )
-                                            toast.show()
-
-                                            return@clickable
-                                        }
-                                    }
-                                    placeViewmodel.placesList += place
-                                    searchQuery = "";
-                                    //trigger coordinates update
-                                    addedPlace = place
-                                }
-                        ) {
-                            Text(text = placename, modifier = Modifier.padding(bottom = 8.dp))
-                        };
-                    }
-
-
-                };
-
-            }
-        }
-
-    }
 }
 

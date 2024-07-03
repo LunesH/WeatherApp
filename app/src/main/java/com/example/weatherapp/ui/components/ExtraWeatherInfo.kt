@@ -29,6 +29,9 @@ import com.example.weatherapp.R
 import com.example.weatherapp.util.Resource
 import com.example.weatherapp.data.model.WeatherData
 
+/**
+ * 2x2 Cards that display the weather data humidity, wind speed, air pressure, and the feels like temperature.
+ * */
 @Composable
 fun ExtraWeatherInfo(weatherResource: Resource<WeatherData>){
     val humidity = when (weatherResource) {

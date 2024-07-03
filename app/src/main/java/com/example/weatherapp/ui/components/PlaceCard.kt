@@ -37,6 +37,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+/**
+ * Displays a card for a specific place containing the place name, the date when this place
+ * got added and an 'x' to delete the place.
+ */
 @Composable
 fun PlaceCard(
     place: Place,
@@ -76,15 +80,6 @@ fun PlaceCard(
                         fontSize = 24.sp,
                         color = Color.Black,
                     )
-                    if (place.creationDate == "location") {
-                        Column(horizontalAlignment = Alignment.End) {
-                            Icon(
-                                Icons.Default.Place,
-                                contentDescription = "Location",
-                                modifier = Modifier.padding(top = 4.dp).size(26.dp)
-                            )
-                        }
-                    }
                 }
                 Text(
                     text = place.creationDate,
@@ -93,33 +88,26 @@ fun PlaceCard(
                     color = Color.Black,
                 )
             }
-            if (place.creationDate.equals("location")){
-                Icon(
-                    Icons.Default.Refresh,
-                    contentDescription = "Location",
-                    modifier = Modifier.padding(end = 22.dp)
-                        .clickable {
-                        })
-            } else {
-                Text(
-                    text = "x",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 28.sp,
-                    color = Color.Black,
-                    modifier = Modifier
-                        .padding(end = 28.dp)
-                        .clickable {
-                            placeViewmodel.placesList -= place
-                            CoroutineScope(Dispatchers.IO).launch {
-                                try {
-                                    MainActivity.database.placeDao().delete(place)
-                                } catch (e: Exception) {
-                                    Log.e("Exception", "Error deleting place: ${e.message}", e)
-                                }
+            Text(
+                text = "x",
+                fontWeight = FontWeight.Bold,
+                fontSize = 28.sp,
+                color = Color.Black,
+                modifier = Modifier
+                    .padding(end = 28.dp)
+                    .clickable {
+                        placeViewmodel.placesList -= place
+                        CoroutineScope(Dispatchers.IO).launch {
+                            try {
+                                MainActivity.database
+                                    .placeDao()
+                                    .delete(place)
+                            } catch (e: Exception) {
+                                Log.e("Exception", "Error deleting place: ${e.message}", e)
                             }
                         }
-                )
-            }
+                    }
+            )
         }
     }
 }
